@@ -6,6 +6,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	public String bookFlight(String firstName, String lastName, String address,
 			String phone, String destination, String date, String classFlight) {
 		// TODO Auto-generated method stub
+		System.out.println("Good luck!");
 		return null;
 	}
 
