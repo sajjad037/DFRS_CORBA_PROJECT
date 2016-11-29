@@ -23,10 +23,12 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		// TODO Auto-generated method stub
 		System.out.println("inside bookFlight");
 		
-		String msg ="bookFlight:"+firstName+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
+		String[] arr = firstName.split(":");
+		
+		String msg =arr[0]+":"+arr[1]+":"+"bookFlight:"+arr[3]+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
 		
 		
-		send(msg);
+		send("1");
 	
 		
 		
@@ -40,7 +42,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		
 		String msg = "getBookedFlightCount:"+recordType;
 		
-		send(msg);
+		send("2");
 		
 		
 		return "";
@@ -53,7 +55,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		
 		String msg = "editFlightRecord:"+recordID+":"+fieldName+":"+newValue;
 		
-		send(msg);
+		send("3");
 		
 		return "";
 	}
@@ -64,7 +66,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		System.out.println("inside transferReservation");
 		
 		String msg = "transferReservation:"+passengerID+":"+currentCity+":"+otherCity;
-		send(msg);
+		send("4");
 		
 		
 		
@@ -87,7 +89,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	}
 	
 	
-	public void send(String message){
+	public void send(String new_message){
 		try{
 			DatagramSocket socket = new DatagramSocket();
 			System.out.println("my port:"+ socket.getLocalPort());
@@ -107,7 +109,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			boolean isWaiting = true;
 			while(isWaiting){
 				
-				System.out.println("hi");
+				System.out.println("hi"+new_message);
 				
 				
 			}
