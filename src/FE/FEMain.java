@@ -1,8 +1,5 @@
 package FE;
 
-//import java.net.DatagramSocket;
-//import java.net.SocketException;
-
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContextExt;
@@ -24,7 +21,6 @@ public class FEMain {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Front End has started.");
-	//	int portUDP = 5555;
 		
 		try {
 			//CORBA configuration
@@ -42,12 +38,6 @@ public class FEMain {
 			
 			orb.run();
 			
-	//		DatagramSocket socket = new DatagramSocket(portUDP);
-	//		socket.close();
-			
-	//	} catch (SocketException e) {
-	//		e.printStackTrace();
-	//		System.err.println("datagram socket exception");
 		} catch (NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
