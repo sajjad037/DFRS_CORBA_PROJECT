@@ -60,7 +60,7 @@ public class TempSequencerAnd4Servers {
 		send("Sajjad");
 		send("Ulan");
 		send("Ulan");
-		send("Ulan");
+	//	send("Ulan");
 		
 		
 		
