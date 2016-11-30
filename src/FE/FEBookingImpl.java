@@ -23,16 +23,13 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		// TODO Auto-generated method stub
 		System.out.println("inside bookFlight");
 		
-//		String[] arr = firstName.split(":");
+		String[] arr = firstName.split(":");
+//					server		manager		cmd			firstName
+		String msg =arr[0]+"|"+arr[1]+":"+"bookFlight:"+arr[3]+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
 		
-//		String msg =arr[0]+":"+arr[1]+":"+"bookFlight:"+arr[3]+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
+		String result = send(msg);
 		
-		
-//		send("1");
-	
-		
-		
-		return "";
+		return result;
 	}
 
 	@Override
@@ -89,32 +86,57 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	}
 	
 	
-	public void send(String new_message){
+	public String send(String new_msg){
+		String result = "0";
+		String [][] resultInfo = null;
 		try{
 			DatagramSocket socket = new DatagramSocket();
 			System.out.println("my port:"+ socket.getLocalPort());
 			
-	/*		InetAddress aHost = InetAddress.getByName(addressSequencer);
+			InetAddress aHost = InetAddress.getByName(addressSequencer);
 			
-			DatagramPacket requestPacket = new DatagramPacket(message.getBytes(), message.length(), aHost, portSequencer);
-			socket.send(requestPacket);
-			System.out.println("Request: " + new String(requestPacket.getData()));
+			DatagramPacket requestPacket1 = new DatagramPacket(new_msg.getBytes(), new_msg.length(), aHost, portSequencer);
+			socket.send(requestPacket1);
+			System.out.println("Request sent to Sequencer: " + new String(requestPacket1.getData()));
 			
-			//receive UDP reply message from other server containing number of passenger on the flights
-			byte[] buffer = new byte[1000];
-			DatagramPacket replyPacket = new DatagramPacket(buffer, buffer.length);	
-			socket.receive(replyPacket);
-			System.out.println("Reply: " + new String(replyPacket.getData()));	
-	*/		
+			byte[] buffer1 = new byte[1000];
+			DatagramPacket replyPacket1 = new DatagramPacket(buffer1, buffer1.length);	
+			socket.receive(replyPacket1);
+			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));	
+			
+			resultInfo = new String[4][4];
+			int i=0;
 			boolean isWaiting = true;
 			while(isWaiting){
+				System.out.println("waiting for UDP message i: "+i);
 				
-				System.out.println("hi"+new_message);
+				try {
+					byte[] buffer2 = new byte[1000];
+					DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
+					socket.receive(requestPacket2); 
+					String message = new String(requestPacket2.getData());				
+					System.out.println("Result message received: "+message+" address: "+requestPacket2.getAddress()+" portNumber: "+requestPacket2.getPort());
+					resultInfo[i][0] = "0";
+					resultInfo[i][1] = message;
+					resultInfo[i][2] = requestPacket2.getAddress().toString();
+					resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+					i++;
+					
+					String msgACK = "Ack:0";
+					DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), requestPacket2.getAddress(), requestPacket2.getPort());
+					socket.send(replyPacket2);
+					System.out.println("Acknowledgement sent to "+requestPacket2.getAddress()+" "+requestPacket2.getPort());
+				} catch (IOException e) {
+					//TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
+				if(i==4){
+					isWaiting = false;
+				}
 				
 			}
 			socket.close();
-			
 			
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
@@ -127,6 +149,41 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
+		result = compareResults(resultInfo);
+	
+		return result;
+	}
+	
+	public String compareResults(String[][] new_resultInfo){
+		
+		String finalResult = "";
+		int j = 0;
+		if(!new_resultInfo[0][1].equalsIgnoreCase("X")){
+			finalResult = new_resultInfo[j][1];
+		}else{
+			j++;
+			finalResult = new_resultInfo[j][1];
+		}
+		
+		
+		
+		int count=0;
+		for(int i=j+1; i<4; i++){
+			if(finalResult.equalsIgnoreCase(new_resultInfo[i][1])){
+				count++;
+			}			
+		}
+		
+		if(count==0){
+			if(!new_resultInfo[j+1][1].equalsIgnoreCase("X")){
+				finalResult = new_resultInfo[j+1][1];
+			}else{
+				finalResult = new_resultInfo[j+2][1];
+			}
+		}
+		
+		return finalResult;
 	}
 	
 
