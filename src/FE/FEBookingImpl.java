@@ -6,6 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.omg.CORBA.ORB;
 
@@ -106,6 +108,8 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			
 			resultInfo = new String[4][4];
 			int i=0;
+			Timer timer = new Timer();
+			TimeOutTask timeOutTask = null;
 			boolean isWaiting = true;
 			while(isWaiting){
 				System.out.println("waiting for UDP message i: "+i);
@@ -120,6 +124,9 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					resultInfo[i][1] = message;
 					resultInfo[i][2] = requestPacket2.getAddress().toString();
 					resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+					if(i==0){
+						timer.schedule(timeOutTask = new TimeOutTask(),1000);
+					}
 					i++;
 					
 					String msgACK = "Ack:0";
@@ -133,6 +140,22 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				
 				if(i==4){
 					isWaiting = false;
+					System.out.println("i = "+i+", isWaiting set to: "+isWaiting);
+				}
+				if(timeOutTask.getTimeOut()){
+					System.out.println("time out has occured:");
+					for(int k=0; k<4; k++){
+						if(resultInfo[k][1] == null){
+							resultInfo[k][0] = "0";
+							resultInfo[k][1] = "X";
+							resultInfo[k][2] = "X";
+							resultInfo[k][3] = "X";
+						}
+						System.out.println("resultInfo["+k+"][0] = "+resultInfo[k][0]);
+						System.out.println("resultInfo["+k+"][1] = "+resultInfo[k][1]);
+						System.out.println("resultInfo["+k+"][2] = "+resultInfo[k][2]);
+						System.out.println("resultInfo["+k+"][3] = "+resultInfo[k][3]);
+					}
 				}
 				
 			}
@@ -151,9 +174,11 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		}
 	
 		result = compareResults(resultInfo);
+		System.out.println("final result: "+result);
 	
 		return result;
 	}
+	
 	
 	public String compareResults(String[][] new_resultInfo){
 		
@@ -165,8 +190,6 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			j++;
 			finalResult = new_resultInfo[j][1];
 		}
-		
-		
 		
 		int count=0;
 		for(int i=j+1; i<4; i++){
