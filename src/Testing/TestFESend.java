@@ -1,5 +1,6 @@
 package Testing;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -38,12 +39,12 @@ public class TestFESend {
 	//Test when 3 server sends the result, and 1 doesn't
 	@Test
 	public void testSend() {
-		System.out.println("testSendTimeOutOneDoesntReply");	
+		System.out.println("testSend");	
 		
-		String result = bookingObject.send("Montreal|MTL1111:Ulan:Baitassov:");
+		String result = bookingObject.send("Ulan").trim();
 		
 		System.out.println("result:" +result);
-		assertEquals("Ulan",result);
+		assertTrue(result.equalsIgnoreCase("Ulan"));
 	}
 	
 }

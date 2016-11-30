@@ -106,6 +106,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			socket.receive(replyPacket1);
 			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));	
 			
+			
 			resultInfo = new String[4][4];
 			int i=0;
 			Timer timer = new Timer();
