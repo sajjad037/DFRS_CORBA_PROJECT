@@ -7,11 +7,17 @@ import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.ORB;
 import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 
+import FE.FEBookingInt;
+import FE.FEBookingIntHelper;
 import Models.Enums;
+import Models.ServerConfig;
 import Server.IServer;
 import StaticContent.StaticContent;
 import Utilities.CLogger;
@@ -28,8 +34,8 @@ import Utilities.InputValidation;
  */
 
 public class FlightManagerHelper {
-	//private FlightOperations flgOpImp = null;
-	private IServer flgOpImp = null;
+	private FEBookingInt flgOpImp = null;
+//	private IServer flgOpImp = null;
 	private CLogger clogger;
 	private final static Logger LOGGER = Logger.getLogger(FlightManagerClient.class.getName());
 	private String managerID = "-1";
@@ -595,18 +601,19 @@ public class FlightManagerHelper {
 	 * @throws RemoteException
 	 * @throws NotBoundException
 	 */
-	private IServer connectToServer(String serverName)
+	private FEBookingInt connectToServer(String serverName)
 			throws InvalidName, NotFound, CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
-		IServer _flgOpImp = null;
-		// try {
+		FEBookingInt _flgOpImp = null;
+//		// try {
 //		int size = StaticContent.getServersList().serverConfigList.size();
 //		for (int i = 0; i < size; i++) {
 //			ServerConfig serverConfig = StaticContent.getServersList().serverConfigList.get(i);
 //			if (serverName.equals(serverConfig.serverName)) {
-//				ORB orb = ORB.init(this.args, null);
-//				org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
-//				NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-//				_flgOpImp = (FlightOperations) FlightOperationsHelper.narrow(ncRef.resolve_str(serverName));
+				ORB orb = ORB.init(this.args, null);
+				org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+				NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+				//_flgOpImp = (FEBookingInt) FEBookingIntHelper.narrow(ncRef.resolve_str(serverName));
+				_flgOpImp = (FEBookingInt) FEBookingIntHelper.narrow(ncRef.resolve_str("FRONTEND"));
 //				break;
 //			}
 //		}

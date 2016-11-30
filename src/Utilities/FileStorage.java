@@ -52,6 +52,7 @@ public class FileStorage {
 		String fileContent = "";
 		try {
 			fileContent = new String(Files.readAllBytes(Paths.get((new File("App.Config")).getPath())));
+			//fileContent = new String(File.readAllBytes(new File("App.Config")).getPath());
 			return (ServersList) getObjectFromJson(fileContent, ServersList.class);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -23,12 +23,12 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		// TODO Auto-generated method stub
 		System.out.println("inside bookFlight");
 		
-		String[] arr = firstName.split(":");
+//		String[] arr = firstName.split(":");
 		
-		String msg =arr[0]+":"+arr[1]+":"+"bookFlight:"+arr[3]+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
+//		String msg =arr[0]+":"+arr[1]+":"+"bookFlight:"+arr[3]+":"+lastName+":"+address+":"+phone+":"+destination+":"+date+":"+classFlight;
 		
 		
-		send("1");
+//		send("1");
 	
 		
 		
@@ -42,7 +42,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		
 		String msg = "getBookedFlightCount:"+recordType;
 		
-		send("2");
+	//	send("2");
 		
 		
 		return "";
@@ -55,7 +55,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		
 		String msg = "editFlightRecord:"+recordID+":"+fieldName+":"+newValue;
 		
-		send("3");
+	//	send("3");
 		
 		return "";
 	}
@@ -66,7 +66,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		System.out.println("inside transferReservation");
 		
 		String msg = "transferReservation:"+passengerID+":"+currentCity+":"+otherCity;
-		send("4");
+//		send("4");
 		
 		
 		
