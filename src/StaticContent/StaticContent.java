@@ -13,6 +13,8 @@ public class StaticContent {
 	public static final String dateFormat = "yyyy/MM/dd";
 	public static final String timeFormat = "HH;mm";
 	private static ServersList serversConfigurations;
+	public static final String BASE_PATH = "C:/FlightManagerWebService/";
+	public static final boolean Save_TO_FILES = false;
 
 	// Error Messages
 	public static final String MSG_NUMBER = "Enter a number[0-9].";
@@ -34,6 +36,14 @@ public class StaticContent {
 
 	// Reserved inputs
 	public static final String VALUES_SEPARATOR = ":";
+	public static final String VALUES_SEPARATOR_INPUTS = "~";
+	public static final String VALUES_SEPARATOR_COMMA = ",";
+	
+	//Configurations	
+	public static final int FRONT_END_lISTENING_PORT = 2020;
+	
+	
+	
 
 	/**
 	 * Get Server Configuration list.

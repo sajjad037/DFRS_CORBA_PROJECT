@@ -1,6 +1,5 @@
 package Models;
 
-
 /**
  * Contains all Enums.
  * @author SajjadAshrafCan
