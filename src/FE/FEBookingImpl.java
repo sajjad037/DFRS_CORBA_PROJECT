@@ -6,6 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.omg.CORBA.ORB;
 
@@ -88,9 +90,9 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	
 	public String send(String new_msg){
 		String result = "0";
-		String [][] resultInfo = null;
+		final String [][] resultInfo = new String[4][4];
 		try{
-			DatagramSocket socket = new DatagramSocket();
+			final DatagramSocket socket = new DatagramSocket();
 			System.out.println("my port:"+ socket.getLocalPort());
 			
 			InetAddress aHost = InetAddress.getByName(addressSequencer);
@@ -104,35 +106,70 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			socket.receive(replyPacket1);
 			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));	
 			
-			resultInfo = new String[4][4];
-			int i=0;
-			boolean isWaiting = true;
-			while(isWaiting){
-				System.out.println("waiting for UDP message i: "+i);
+			
+			Thread t2 = new Thread(new Runnable(){
+				@Override
+				public void run(){
+					int i=0;
+					boolean isWaiting2 = true;
+					while(isWaiting2){
+						try {
+							System.out.println("waiting for UDP message i: "+i);
+							byte[] buffer2 = new byte[1000];
+							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
+							socket.receive(requestPacket2); 
+							String message = new String(requestPacket2.getData());				
+							System.out.println("Result message received: "+message+" address: "+requestPacket2.getAddress()+" portNumber: "+requestPacket2.getPort());
+							resultInfo[i][0] = "0";
+							resultInfo[i][1] = message;
+							resultInfo[i][2] = requestPacket2.getAddress().toString();
+							resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
 				
-				try {
-					byte[] buffer2 = new byte[1000];
-					DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-					socket.receive(requestPacket2); 
-					String message = new String(requestPacket2.getData());				
-					System.out.println("Result message received: "+message+" address: "+requestPacket2.getAddress()+" portNumber: "+requestPacket2.getPort());
-					resultInfo[i][0] = "0";
-					resultInfo[i][1] = message;
-					resultInfo[i][2] = requestPacket2.getAddress().toString();
-					resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
-					i++;
-					
-					String msgACK = "Ack:0";
-					DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), requestPacket2.getAddress(), requestPacket2.getPort());
-					socket.send(replyPacket2);
-					System.out.println("Acknowledgement sent to "+requestPacket2.getAddress()+" "+requestPacket2.getPort());
-				} catch (IOException e) {
-					//TODO Auto-generated catch block
-					e.printStackTrace();
+							i++;
+				
+							String msgACK = "Ack:0";
+							DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), requestPacket2.getAddress(), requestPacket2.getPort());
+							socket.send(replyPacket2);
+							System.out.println("Acknowledgement sent to "+requestPacket2.getAddress()+" "+requestPacket2.getPort());
+				
+							if(i==4){
+								isWaiting2 = false;
+								System.out.println("i = "+i+", isWaiting2 set to: "+isWaiting2);
+							}
+						} catch (IOException e) {
+							//TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
-				
-				if(i==4){
+			});
+			t2.start();
+			
+			
+			Timer timer = new Timer();
+			TimeOutTask timeOutTask = null;
+			boolean isWaiting = true;
+			
+			timer.schedule(timeOutTask = new TimeOutTask(),5000);
+			
+			while(isWaiting){
+				System.out.println("run");
+				if(timeOutTask.getTimeOut()){
 					isWaiting = false;
+					t2.stop();
+					System.out.println("time out has occured:");
+					for(int k=0; k<4; k++){
+						if(resultInfo[k][1] == null){
+							resultInfo[k][0] = "0";
+							resultInfo[k][1] = "X";
+							resultInfo[k][2] = "X";
+							resultInfo[k][3] = "X";
+						}
+						System.out.println("resultInfo["+k+"][0] = "+resultInfo[k][0]);
+						System.out.println("resultInfo["+k+"][1] = "+resultInfo[k][1]);
+						System.out.println("resultInfo["+k+"][2] = "+resultInfo[k][2]);
+						System.out.println("resultInfo["+k+"][3] = "+resultInfo[k][3]);
+					}
 				}
 				
 			}
@@ -151,9 +188,11 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		}
 	
 		result = compareResults(resultInfo);
+		System.out.println("final result: "+result);
 	
 		return result;
 	}
+	
 	
 	public String compareResults(String[][] new_resultInfo){
 		
@@ -165,8 +204,6 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			j++;
 			finalResult = new_resultInfo[j][1];
 		}
-		
-		
 		
 		int count=0;
 		for(int i=j+1; i<4; i++){
