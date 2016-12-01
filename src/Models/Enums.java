@@ -38,6 +38,14 @@ public class Enums {
 	public enum Operations {
 		bookFlight, getBookedFlightCount, editFlightRecord, transferReservation
 	}
+	
+	public enum UDPMessageType {
+		Request,Reply
+	}
+	
+	public enum UDPSender {
+		FrontEnd, Sequencer, RMUlan, RMSajjad, RMUmer, RMFeras, ReplicaUlan, ReplicaSajjad, ReplicaUmer, ReplicaFeras
+	}
 
 	public static FlightFileds getEnumFlightFiledsFromString(String filedsName) {
 		try {

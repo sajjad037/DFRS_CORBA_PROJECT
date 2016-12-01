@@ -15,6 +15,9 @@ public class StaticContent {
 	private static ServersList serversConfigurations;
 	public static final String BASE_PATH = "C:/FlightManagerWebService/";
 	public static final boolean Save_TO_FILES = false;
+	
+	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
+	public static final int UDP_RECEIVE_TIMEOUT = 3000;
 
 	// Error Messages
 	public static final String MSG_NUMBER = "Enter a number[0-9].";
@@ -40,7 +43,37 @@ public class StaticContent {
 	public static final String VALUES_SEPARATOR_COMMA = ",";
 	
 	//Configurations	
-	public static final int FRONT_END_lISTENING_PORT = 2020;
+	public static final String FRONT_END_IP_ADDRESS = "127.0.0.1";
+	public static final int FRONT_END_lISTENING_PORT = 1010;
+	
+	public static final String SEQUENCER_IP_ADDRESS = "127.0.0.1";
+	public static final int SEQUENCER_lISTENING_PORT = 1011;
+	
+	public static final String RM1_IP_ADDRESS = "127.0.0.1";
+	public static final int RM1_lISTENING_PORT = 1012;
+	
+	public static final String RM2_IP_ADDRESS = "127.0.0.1";
+	public static final int RM2_lISTENING_PORT = 1013;
+
+	public static final String RM3_IP_ADDRESS = "127.0.0.1";
+	public static final int RM3_lISTENING_PORT = 1014;
+
+	public static final String RM4_IP_ADDRESS = "127.0.0.1";
+	public static final int RM4_lISTENING_PORT = 1015;
+	
+	
+	public static final String REPLICA_ULAN_IP_ADDRESS = "127.0.0.1";
+	public static final int REPLICA_ULAN_lISTENING_PORT = 1016;
+	
+	public static final String REPLICA_SAJJAD_IP_ADDRESS = "127.0.0.1";
+	public static final int REPLICA_SAJJAD_lISTENING_PORT = 1017;
+	
+	public static final String REPLICA_UMER_IP_ADDRESS = "127.0.0.1";
+	public static final int REPLICA_UMER_lISTENING_PORT = 1018;
+	
+	public static final String REPLICA_FERAS_IP_ADDRESS = "127.0.0.1";
+	public static final int REPLICA_FERAS_lISTENING_PORT = 1019;
+	
 	
 	
 	

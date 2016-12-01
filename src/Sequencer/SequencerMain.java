@@ -20,6 +20,11 @@ public class SequencerMain {
 			System.out.println(msg);
 
 			// Start UDP Server
+			SequencerListner server = new SequencerListner(clogger);
+			server.start();
+			//server.executeTestMessage();
+			server.join();
+			
 
 		} catch (Exception e) {
 			System.out.println("Sequencer Exception: " + e.getMessage());
