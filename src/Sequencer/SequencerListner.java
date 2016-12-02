@@ -48,7 +48,17 @@ public class SequencerListner implements Runnable {
 				case FrontEnd:
 					increaseSequenceNumber();
 					udpMessage.setSequencerNumber(sequencerNumber);
+					
+					// Multicast  Message in independent thread.
+//					final UDPMessage fUDPMessage = udpMessage; // Or whatever
+//					Thread t = new Thread(new Runnable() {
+//					    public void run() {
+//					    	sequencerMulticaster.multicatMessage(fUDPMessage);
+//					    }
+//					});
+//					t.start();
 					sequencerMulticaster.multicatMessage(udpMessage);
+					
 					break;
 					
 //				case ReplicaUlan:
@@ -62,38 +72,15 @@ public class SequencerListner implements Runnable {
 					break;
 				}
 				
-//
-//				switch (opreation) {
-//				case "getBookedFlightCount":
-//					flightClass = requestArray[2];
-//					capitalizedSentence = getLocalFlightCount(flightClass);
-//					break;
-//
-//				case "transferReservation":
-//					String firstName, lastName, address, phone, destination, date = "";
-//					// oldBookingId = requestArray[2];
-//					firstName = requestArray[3];
-//					lastName = requestArray[4];
-//					address = requestArray[5];
-//					phone = requestArray[6];
-//					destination = requestArray[7];
-//					date = requestArray[8];
-//					flightClass = requestArray[9];
-//					capitalizedSentence = bookFlight(firstName, lastName, address, phone, destination, date,
-//							flightClass);
-//
-//					break;
-//
-//				default:
-//					break;
-//				}
-
-				//sendData = capitalizedSentence.getBytes();
-				//DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-				//serverSocket.send(sendPacket);
+				//Send Acknowledge.
+				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
+				ackMessage.setStatus(true);
+				byte[] sendData = Serializer.serialize(ackMessage);
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+				serverSocket.send(sendPacket);
 
 				// Clear Send buffer
-				//sendData = new byte[SIZE_BUFFER_REQUEST];
+				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			}
 		} catch (Exception ex) {
 			clogger.logException("on starting UDP Server", ex);
