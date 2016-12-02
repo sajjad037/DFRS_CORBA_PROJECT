@@ -4,16 +4,25 @@
 package Client;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Models.Enums;
+import Models.UDPMessage;
 import Utilities.FileStorage;
 import Utilities.InputValidation;
 
@@ -136,21 +145,46 @@ public class test {
 		//String firstName = InputValidation.inputStringWithSpaces(scanner);
 		String line = "Response [returnID=3, status=true, message=New Flight added successfully.]";
 		//String line = "This order was placed for QT3000! OK?";
-	      String pattern = "(.*)(\\d+)(.*)";
-
-	      // Create a Pattern object
-	      Pattern r = Pattern.compile(pattern);
-
-	      // Now create matcher object.
-	      Matcher m = r.matcher(line);
-	      if (m.find( )) {
-	         System.out.println("Found value: " + m.group(0) );
-	         System.out.println("Found value: " + m.group(1) );
-	         System.out.println("Found value: " + m.group(2) );
-	      }else {
-	         System.out.println("NO MATCH");
-	      }
+//	      String pattern = "(.*)(\\d+)(.*)";
+//
+//	      // Create a Pattern object
+//	      Pattern r = Pattern.compile(pattern);
+//
+//	      // Now create matcher object.
+//	      Matcher m = r.matcher(line);
+//	      if (m.find( )) {
+//	         System.out.println("Found value: " + m.group(0) );
+//	         System.out.println("Found value: " + m.group(1) );
+//	         System.out.println("Found value: " + m.group(2) );
+//	      }else {
+//	         System.out.println("NO MATCH");
+//	      }
 		
+		//HASH MAP TEST
+		UDPMessage udpMessage = new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.bookFlight, Enums.UDPMessageType.Request);
+		HashMap<String, UDPMessage> hm = new HashMap<String, UDPMessage>();
+		 System.out.println("Size: " + hm.size());
+		 // Put elements to the map
+		 hm.put("1", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.bookFlight, Enums.UDPMessageType.Request));
+		 hm.put("2", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request));
+		 hm.put("3", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.getBookedFlightCount, Enums.UDPMessageType.Request));
+		 hm.put("4", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.transferReservation, Enums.UDPMessageType.Request));
+		 hm.put("5", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.bookFlight, Enums.UDPMessageType.Request));
+		 hm.put("6", new UDPMessage(Enums.UDPSender.FrontEnd, 1, Enums.FlightCities.Montreal, Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request));
+		 //System.out.println("Zara's new balance: " + hm.get("Zara"));
+		 //System.out.println("Size: " + hm.size());
+		 
+		 Map<String, UDPMessage> map = Collections.synchronizedMap(hm);
+			Set<Entry<String, UDPMessage>> set = map.entrySet();
+			// Get an iterator
+			Iterator<Entry<String, UDPMessage>> i = set.iterator();
+			
+			// Send All Messages from Buffer one by one
+			while (i.hasNext()) {
+				Entry<String, UDPMessage> me = i.next();
+				System.out.println("Key : "+ me.getKey().toString()+", Operation : "+ me.getValue().getOpernation()); 	
+				
+			}
 		System.out.println("out");
 	}
 	

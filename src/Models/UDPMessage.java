@@ -1,6 +1,7 @@
 package Models;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import Models.Enums.FlightCities;
 import Models.Enums.Operations;
@@ -12,7 +13,7 @@ import Models.Enums.UDPSender;
  * @author SajjadAshrafCan
  *
  */
-public class UDPMessage implements Serializable{
+public class UDPMessage implements Serializable {
 
 	/**
 	 * 
@@ -21,21 +22,23 @@ public class UDPMessage implements Serializable{
 	long sequencerNumber = -1;
 	Enums.FlightCities serverName;
 	Enums.Operations opernation;
-	String concatenatedInputs;
+	// String concatenatedInputs;
+	HashMap<String, String> paramters;
 	Enums.UDPSender sender;
 	Enums.UDPMessageType messageType;
 	Boolean status;
 	int returnID;
 	String replyMsg;
-	
+
 	/**
-	 * 
+	 * Message Type : Request when send request, Reply when you reply back some one request.
 	 * @param sequencerNumber
 	 * @param serverName
 	 * @param opernation
 	 * @param messageType
 	 */
-	public UDPMessage(UDPSender sender, long sequencerNumber, FlightCities serverName, Operations opernation, UDPMessageType messageType) {
+	public UDPMessage(UDPSender sender, long sequencerNumber, FlightCities serverName, Operations opernation,
+			UDPMessageType messageType) {
 		super();
 		this.sender = sender;
 		this.sequencerNumber = sequencerNumber;
@@ -52,7 +55,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param sender the sender to set
+	 * @param sender
+	 *            the sender to set
 	 */
 	public void setSender(Enums.UDPSender sender) {
 		this.sender = sender;
@@ -66,7 +70,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param sequencerNumber the sequencerNumber to set
+	 * @param sequencerNumber
+	 *            the sequencerNumber to set
 	 */
 	public void setSequencerNumber(long sequencerNumber) {
 		this.sequencerNumber = sequencerNumber;
@@ -80,7 +85,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param serverName the serverName to set
+	 * @param serverName
+	 *            the serverName to set
 	 */
 	public void setServerName(Enums.FlightCities serverName) {
 		this.serverName = serverName;
@@ -94,24 +100,26 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param opernation the opernation to set
+	 * @param opernation
+	 *            the opernation to set
 	 */
 	public void setOpernation(Enums.Operations opernation) {
 		this.opernation = opernation;
 	}
 
 	/**
-	 * @return the concatenatedInputs
+	 * @return the paramters
 	 */
-	public String getConcatenatedInputs() {
-		return concatenatedInputs;
+	public HashMap<String, String> getParamters() {
+		return paramters;
 	}
 
 	/**
-	 * @param concatenatedInputs the concatenatedInputs to set
+	 * @param paramters
+	 *            the paramters to set
 	 */
-	public void setConcatenatedInputs(String concatenatedInputs) {
-		this.concatenatedInputs = concatenatedInputs;
+	public void setParamters(HashMap<String, String> paramters) {
+		this.paramters = paramters;
 	}
 
 	/**
@@ -122,7 +130,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param messageType the messageType to set
+	 * @param messageType
+	 *            the messageType to set
 	 */
 	public void setMessageType(Enums.UDPMessageType messageType) {
 		this.messageType = messageType;
@@ -136,7 +145,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	public void setStatus(Boolean status) {
 		this.status = status;
@@ -150,7 +160,8 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param returnID the returnID to set
+	 * @param returnID
+	 *            the returnID to set
 	 */
 	public void setReturnID(int returnID) {
 		this.returnID = returnID;
@@ -164,15 +175,11 @@ public class UDPMessage implements Serializable{
 	}
 
 	/**
-	 * @param replyMsg the replyMsg to set
+	 * @param replyMsg
+	 *            the replyMsg to set
 	 */
 	public void setReplyMsg(String replyMsg) {
 		this.replyMsg = replyMsg;
 	}
-	
-	
-	
-	
-	
-	
+
 }

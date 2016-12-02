@@ -39,7 +39,8 @@ public class FlightManagerHelper {
 	private CLogger clogger;
 	private final static Logger LOGGER = Logger.getLogger(FlightManagerClient.class.getName());
 	private String managerID = "-1";
-	private String userCurrentCity = "";
+	private String serverName = "";
+	private String shortServerName = "";
 	private Scanner scanner;
 	private String[] args;
 
@@ -66,11 +67,10 @@ public class FlightManagerHelper {
 			switch (selectedOption) {
 			case 1:
 				System.out.println("Create Enter Short City / Server Name (like MTL, WST, NDL):");
-				String shortCityName = InputValidation.inputShortCity(scanner);
-				String newManagerId = createManagerAccount(shortCityName);
-				this.managerID = newManagerId;
+				this.shortServerName = InputValidation.inputShortCity(scanner);
+				this.managerID  = createManagerAccount(this.shortServerName);
 				System.out.println(
-						"Please note your New Manager ID : " + newManagerId + ". \r\n Press Enter to move forward.");
+						"Please note your New Manager ID : " + this.managerID + ". \r\n Press Enter to move forward.");
 				scanner.nextLine();
 				flightManager();
 				break;
@@ -105,8 +105,8 @@ public class FlightManagerHelper {
 	public void userLogin() {
 
 		System.out.println("Please " + StaticContent.MSG_CITY_NAME.replace("a valid City", "Current City"));
-		String currentCity = InputValidation.inputFullCity(scanner);
-		this.userCurrentCity = currentCity;
+		this.serverName = InputValidation.inputFullCity(scanner);
+		//this.serverName = currentCity;
 
 		boolean run = true;
 		while (run) {
@@ -119,7 +119,7 @@ public class FlightManagerHelper {
 				bookFlight();
 				break;
 			case 2:
-				getFlightDetails(this.userCurrentCity);
+				getFlightDetails(this.serverName);
 				break;
 
 			case 3:
@@ -199,8 +199,8 @@ public class FlightManagerHelper {
 	private void flightManager() {
 		try {
 			clogger = new CLogger(LOGGER, "Manager/" + managerID + ".log");
-			String shortServerName = managerID.substring(0, 3);
-			String serverName = getFullServerName(shortServerName);
+			this.shortServerName = managerID.substring(0, 3);
+			this.serverName = getFullServerName(shortServerName);
 			flgOpImp = connectToServer(serverName);
 
 			boolean run = true;
@@ -315,9 +315,9 @@ public class FlightManagerHelper {
 			destination = "";
 			while (inputvalid) {
 				destination = InputValidation.inputFullCity(scanner);
-				if (destination.equals(userCurrentCity)) {
+				if (destination.equals(serverName)) {
 					System.out.println(StaticContent.ERROR_GENERAL_MSG + " You can not use current City ("
-							+ userCurrentCity + ") as Destination.");
+							+ serverName + ") as Destination.");
 					inputvalid = true;
 				} else {
 					inputvalid = false;
@@ -329,8 +329,10 @@ public class FlightManagerHelper {
 			System.out.println(StaticContent.MSG_FLIGHT_CLASS);
 			_class = InputValidation.inputFlightClass(scanner);
 
-			flgOpImp = connectToServer(userCurrentCity);
-
+			flgOpImp = connectToServer(serverName);
+			
+			firstName = serverName+":"+managerID+":"+firstName;
+			
 			clogger.log(
 					"bookFlight(firstName:" + firstName + ", lastName:" + lastName + ", address:" + address + ", phone:"
 							+ phone + ", destination:" + destination + ", date:" + date + ", Class:" + _class + ")");
@@ -358,7 +360,8 @@ public class FlightManagerHelper {
 			recordType = InputValidation.inputRecordTypeFlightCount(scanner);
 
 			clogger.log("Getting BookedFlightCount for Class " + recordType + "....");
-			recordType = recordType + ":" + managerID;
+			//recordType = recordType + ":" + managerID;
+			recordType = serverName+":"+managerID+":"+recordType;
 			response = flgOpImp.getBookedFlightCount(recordType);
 			System.out.println(response);
 			clogger.log(response);
@@ -387,7 +390,11 @@ public class FlightManagerHelper {
 
 			clogger.log("editFlightRecord(recordID:" + recordID + ", fieldName:" + fieldName + ", newValue:" + newValue
 					+ ").");
-			response = flgOpImp.editFlightRecord(recordID + ":" + managerID, fieldName, newValue);
+			
+			recordID = serverName+":"+managerID+":"+recordID; 
+			
+			response = flgOpImp.editFlightRecord(recordID, fieldName, newValue);
+			//response = flgOpImp.editFlightRecord(recordID + ":" + managerID, fieldName, newValue);
 
 			System.out.println(response);
 			clogger.log(response);
@@ -442,8 +449,10 @@ public class FlightManagerHelper {
 
 			String newValues = "" + seatsInFirstClass + ":" + seatsInBusinessClass + ":" + seatsInEconomyClass + ":"
 					+ flightDate + ":" + flightTime + ":" + _destinaition;
-
-			response = flgOpImp.editFlightRecord("-1:" + managerID, Enums.FlightFileds.createFlight.toString(),
+			
+			String recordID =  serverName+":"+managerID+":-1"; 
+			
+			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.createFlight.toString(),
 					newValues);
 
 			System.out.println(response);
@@ -468,7 +477,8 @@ public class FlightManagerHelper {
 			System.out.println("Enter FlightID To Deleted Record:");
 			flightID = InputValidation.inputInteger(scanner);
 
-			response = flgOpImp.editFlightRecord("-1:" + managerID, Enums.FlightFileds.deleteFlight.toString(),
+			String recordID =  serverName+":"+managerID+":-1";
+			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.deleteFlight.toString(),
 					flightID + "");
 
 			clogger.log("deleteFlight(flightID:" + flightID + ")");
@@ -493,8 +503,9 @@ public class FlightManagerHelper {
 
 		try {
 			System.out.println("\n**** Home -> Flight Details ****\n");
+			String recordID =  serverName+":"+managerID+":-1";
 			flgOpImp = connectToServer(serverName);
-			response = flgOpImp.editFlightRecord("-1:" + managerID, Enums.FlightFileds.flightDetail.toString(), "");
+			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.flightDetail.toString(), "None");
 			System.out.println(response);
 			clogger.log(response);
 
@@ -514,7 +525,9 @@ public class FlightManagerHelper {
 		try {
 			System.out.println("\n**** Home -> Booking Details ****\n");
 			// flgOpImp = connectToServer(serverName);
-			response = flgOpImp.editFlightRecord("-1:" + managerID, Enums.FlightFileds.bookingDetail.toString(), "");
+			String recordID =  serverName+":"+managerID+":-1";
+			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.bookingDetail.toString(), "None");
+			//response = flgOpImp.editFlightRecord("-1:" + managerID, Enums.FlightFileds.bookingDetail.toString(), "");
 			System.out.println(response);
 			clogger.log(response);
 
@@ -559,7 +572,9 @@ public class FlightManagerHelper {
 			clogger.log("transferFlight(passengerID:" + passengerID + ", currentCity:" + currentCity + ", otherCity:"
 					+ otherCity + ")");
 			
-			flgOpImp = connectToServer(currentCity);			
+			flgOpImp = connectToServer(currentCity);	
+			
+			passengerID =  serverName+":"+managerID+":"+passengerID;
 			String response = flgOpImp.transferReservation(passengerID, currentCity, otherCity);
 			flgOpImp = connectToServer(serverName);
 

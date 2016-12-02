@@ -35,8 +35,9 @@ public class SequencerMulticaster {
 	}
 
 	public void multicatMessage(UDPMessage udpMessage) {
-
+		//Update Sender
 		udpMessage.setSender(Enums.UDPSender.Sequencer);
+		
 		// Buffer msg in All 4 replicas
 		bufferRMUlan.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMSajjad.put(udpMessage.getSequencerNumber() + "", udpMessage);
@@ -141,28 +142,30 @@ public class SequencerMulticaster {
 			Set set = map.entrySet();
 			// Get an iterator
 			Iterator i = set.iterator();
-
-			// Display elements
+			clientSocket = new DatagramSocket();
+			InetAddress IPAddress = InetAddress.getByName(ip);
+			
+			// Send All Messages from Buffer one by one
 			while (i.hasNext()) {
 				Map.Entry me = (Map.Entry) i.next();
-				udpMessage = (UDPMessage) me.getValue();
-				
-				clientSocket = new DatagramSocket();
-				InetAddress IPAddress = InetAddress.getByName(ip);
+				udpMessage = (UDPMessage) me.getValue();				
 
-				// Send Message
+				// Serialize udpMessage
 				byte[] sendData = Serializer.serialize(udpMessage);
+				//Send UDP Message
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 				clientSocket.send(sendPacket);
-
+				
+				//Set Time Out, and Wait For Ack
 				clientSocket.setSoTimeout(StaticContent.UDP_RECEIVE_TIMEOUT);
-				// Wait For Ack
+				
 				byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				clientSocket.receive(receivePacket);
 				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+				
+				//Deserialize Data to udpMessage Object.
 				UDPMessage udpMessageReceived = Serializer.deserialize(message);
-				// Clear received buffer
 				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 
 				switch (udpMessageReceived.getSender()) {
