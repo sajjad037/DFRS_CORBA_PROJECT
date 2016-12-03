@@ -137,18 +137,29 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				
 		String result = "0";
 		final String[][] resultInfo = new String[4][4];
+		System.out.println("a");
+		final DatagramSocket socket;
+		try {
+			socket = new DatagramSocket();
 		
-		//Sending Request To Front End.
-		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, true);
+			
+		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, false, socket);
+		System.out.println("b");
+		System.out.println("c");
+//	final DatagramSocket socket = new DatagramSocket();			
+		System.out.println("abc port: " + socket.getLocalPort());
+		System.out.println("d");
+		new_msg.setFrontEndPort(socket.getLocalPort());
+		
 		Boolean status = s.send(new_msg);
-		System.out.println("status : "+status);
-//		final DatagramSocket socket = s.getOutGoingSocket();	
-//		
-//		//final DatagramSocket socket = new DatagramSocket();			
-//		System.out.println("my port:" + socket.getLocalPort());		
-//		
-//		System.err.println("status : " + status);
-
+		System.out.println("e");
+		System.out.println("status : " + status);
+		System.out.println("f");
+		System.out.println("socket isclosed? : "+ socket.isClosed());
+		System.out.println("abc port: " + socket.getLocalPort());
+		System.out.println("g");
+		
+		
 		
 //			InetAddress aHost = InetAddress.getByName(addressSequencer);
 
@@ -162,7 +173,8 @@ public class FEBookingImpl extends FEBookingIntPOA {
 //			socket.receive(replyPacket1);
 //			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));
 
-		/*		
+//		System.exit(0);
+				
 		Thread t2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -170,6 +182,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				boolean isWaiting2 = true;
 				while (isWaiting2) {
 					try {
+						System.out.println("h");
+						System.out.println("socket isclosed? : "+ socket.isClosed());
+						System.out.println("i");
+						
 						System.out.println("waiting for UDP message i: " + i);
 						byte[] buffer2 = new byte[1000];
 						DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
@@ -230,11 +246,16 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				}
 			}
 
-		}*/
-		//socket.close();
+		}
+		socket.close();
+		
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
-//		result = compareResults(resultInfo);
-//		System.out.println("final result: " + result);
+		result = compareResults(resultInfo);
+		System.out.println("final result: " + result);
 
 		return result;
 	}
