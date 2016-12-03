@@ -25,9 +25,8 @@ public class Temp4Servers {
 
 	public static void send(final String ip_address, final int port, final String new_ans) {
 		System.out.println("server is up: "+ ip_address+" , port: "+ port);
-		try {
 			
-			final DatagramSocket socket = new DatagramSocket();
+			
 			Thread t2 = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -51,12 +50,17 @@ public class Temp4Servers {
 						System.out.println("abc port: "+ portFE);
 						
 			//			DatagramSocket s = new DatagramSocket(portFE);
+						DatagramSocket socket = new DatagramSocket();
+						System.out.println("my socket is : "+ socket.getLocalPort());
 						
-			//			DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
-			//			socket.send(requestPacket1);
+						DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
+						socket.send(requestPacket1);
 						
-						Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
-						s.send(r.getData());
+				//		Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
+				//		s.send(r.getData());
+						if(socket!=null){
+							socket.close();
+						}
 						
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block
@@ -68,13 +72,8 @@ public class Temp4Servers {
 				}
 			});
 			t2.start();
-			if(socket!=null){
-				socket.close();
-			}
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+	
 
 			
 	}

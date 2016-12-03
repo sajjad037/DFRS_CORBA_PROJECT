@@ -159,13 +159,13 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		System.out.println("socket isclosed? : "+ socket.isClosed());
 		System.out.println("abc port: " + socket.getLocalPort());
 		System.out.println("g");
-		int a = socket.getLocalPort();
+	//	int a = socket.getLocalPort();
 		
-		socket.close();
-		System.out.println("ff");
-		System.out.println("socket isclosed? : "+ socket.isClosed());
+	//	socket.close();
+	//	System.out.println("ff");
+	//	System.out.println("socket isclosed? : "+ socket.isClosed());
 	//	System.out.println("abc port: " + socket.getLocalPort());
-		System.out.println("gg");
+	//	System.out.println("gg");
 		
 		
 		
@@ -186,7 +186,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 //		System.exit(0);
 		
 		
-		while(true){
+/*		while(true){
 
 			Reciever r = new Reciever(a, StaticContent.FRONT_END_ACK_PORT);
 
@@ -196,10 +196,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			System.out.println("the data received is : "
 					+ r.getData().getSender());
 		}
-		
-		//final DatagramSocket socket2 = new DatagramSocket(a);
+*/		
+	//	final DatagramSocket socket2 = new DatagramSocket(a);
 				
-	/*	Thread t2 = new Thread(new Runnable() {
+		Thread t2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				int i = 0;
@@ -213,7 +213,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 						System.out.println("waiting for UDP message i: " + i);
 						byte[] buffer2 = new byte[1000];
 						DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-						//socket2.receive(requestPacket2);
+						socket.receive(requestPacket2);
 						
 						
 						String message = new String(requestPacket2.getData());
@@ -226,12 +226,12 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 						i++;
 
-						String msgACK = "Ack:0";
-						DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(),
-								requestPacket2.getAddress(), requestPacket2.getPort());
-						socket2.send(replyPacket2);
-						System.out.println("Acknowledgement sent to " + requestPacket2.getAddress() + " "
-								+ requestPacket2.getPort());
+				//		String msgACK = "Ack:0";
+				//		DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(),
+				//				requestPacket2.getAddress(), requestPacket2.getPort());
+				//		socket.send(replyPacket2);
+				//		System.out.println("Acknowledgement sent to " + requestPacket2.getAddress() + " "
+				//				+ requestPacket2.getPort());
 
 						if (i == 4) {
 							isWaiting2 = false;
@@ -253,7 +253,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		timer.schedule(timeOutTask = new TimeOutTask(), 5000);
 
 		while (isWaiting) {
-		//	System.out.println("run");
+			System.out.println("run");
 			if (timeOutTask.getTimeOut()) {
 				isWaiting = false;
 				t2.stop();
@@ -273,14 +273,14 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			}
 
 		}
-		socket2.close();
-	*/	
+		socket.close();
+		
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-	//	result = compareResults(resultInfo);
+		result = compareResults(resultInfo);
 		System.out.println("final result: " + result);
 
 		return result;

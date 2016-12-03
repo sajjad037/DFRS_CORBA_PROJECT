@@ -34,7 +34,6 @@ public class TempSequencer {
 			try {
 			sendDoc(r.getData(), StaticContent.REPLICA_ULAN_IP_ADDRESS, StaticContent.REPLICA_ULAN_lISTENING_PORT);
 			
-			
 			sendDoc(r.getData(), StaticContent.REPLICA_SAJJAD_IP_ADDRESS, StaticContent.REPLICA_SAJJAD_lISTENING_PORT);
 			
 			sendDoc(r.getData(), StaticContent.REPLICA_UMER_IP_ADDRESS, StaticContent.REPLICA_UMER_lISTENING_PORT);
