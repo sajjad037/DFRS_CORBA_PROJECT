@@ -50,6 +50,10 @@ public class StaticContent {
 	public static final String SEQUENCER_IP_ADDRESS = "127.0.0.1";
 	public static final int SEQUENCER_lISTENING_PORT = 5551;
 	public static final int SEQUENCER_ACK_PORT = 5552;
+	public static final int SEQUENCER_ACK_PORT_FOR_REPLICA_ULAN = 5560;
+	public static final int SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD = 5561;
+	public static final int SEQUENCER_ACK_PORT_FOR_REPLICA_UMER = 5562;
+	public static final int SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS = 5563;
 	
 	public static final String RM1_IP_ADDRESS = "127.0.0.1";
 	public static final int RM1_lISTENING_PORT = 5051;

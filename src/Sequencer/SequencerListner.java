@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import Models.Enums;
 import Models.UDPMessage;
+import ReliableUDP.Reciever;
 import StaticContent.*;
 import Utilities.CLogger;
 import Utilities.Serializer;
@@ -35,20 +36,24 @@ public class SequencerListner implements Runnable {
 			clogger.log(msg);
 			while (continueUDP) {
 
-				// Read request
-				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-				serverSocket.receive(receivePacket);
+//				// Read request
+//				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+//				serverSocket.receive(receivePacket);
+//				
+//				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+//		        UDPMessage udpMessage = Serializer.deserialize(message);
+//				// Clear received buffer
+//				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 				
-				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
-		        UDPMessage udpMessage = Serializer.deserialize(message);
-				// Clear received buffer
-				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+				Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT);
+				UDPMessage udpMessage =  r.getData();
+				//System.out.println("data recieved is : "+ r.getData().getSequencerNumber());				
 				
 				switch (udpMessage.getSender()) {
 				case FrontEnd:
 					increaseSequenceNumber();
-					udpMessage.setFrontEndPort(receivePacket.getPort());
-					udpMessage.setFrontEndIP(receivePacket.getAddress());
+					//udpMessage.setFrontEndPort(receivePacket.getPort());
+					//udpMessage.setFrontEndIP(receivePacket.getAddress());
 					udpMessage.setSequencerNumber(sequencerNumber);
 					
 					// Multicast  Message in independent thread.
@@ -74,15 +79,15 @@ public class SequencerListner implements Runnable {
 					break;
 				}
 				
-				//Send Acknowledge.
-				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
-				ackMessage.setStatus(true);
-				byte[] sendData = Serializer.serialize(ackMessage);
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-				serverSocket.send(sendPacket);
-
-				// Clear Send buffer
-				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+//				//Send Acknowledge.
+//				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
+//				ackMessage.setStatus(true);
+//				byte[] sendData = Serializer.serialize(ackMessage);
+//				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+//				serverSocket.send(sendPacket);
+//
+//				// Clear Send buffer
+//				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			}
 		} catch (Exception ex) {
 			clogger.logException("on starting UDP Server", ex);
