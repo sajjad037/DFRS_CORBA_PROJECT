@@ -29,6 +29,8 @@ public class UDPMessage implements Serializable {
 	Boolean status;
 	int returnID;
 	String replyMsg;
+	int FrontEndPort;
+	String ManagerID;
 
 	/**
 	 * Message Type : Request when send request, Reply when you reply back some one request.
@@ -181,5 +183,35 @@ public class UDPMessage implements Serializable {
 	public void setReplyMsg(String replyMsg) {
 		this.replyMsg = replyMsg;
 	}
+
+	/**
+	 * @return the frontEndPort
+	 */
+	public int getFrontEndPort() {
+		return FrontEndPort;
+	}
+
+	/**
+	 * @param frontEndPort the frontEndPort to set
+	 */
+	public void setFrontEndPort(int frontEndPort) {
+		FrontEndPort = frontEndPort;
+	}
+
+	/**
+	 * @return the managerID
+	 */
+	public String getManagerID() {
+		return ManagerID;
+	}
+
+	/**
+	 * @param managerID the managerID to set
+	 */
+	public void setManagerID(String managerID) {
+		ManagerID = managerID;
+	}
+	
+	
 
 }

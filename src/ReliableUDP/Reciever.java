@@ -10,9 +10,13 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
+import Models.UDPMessage;
+import StaticContent.StaticContent;
+import Utilities.Serializer;
+
 public class Reciever {
 	static int pkt_size = 1000;
-	String data;
+	UDPMessage data;
 	// Receiver constructor
 	public Reciever(int sk2_dst_port, int sk3_dst_port) {
 		DatagramSocket sk2, sk3;
@@ -109,7 +113,16 @@ public class Reciever {
 				}
 				if (fos != null) {
 					fos.close();
-					data = fos.toString();
+					
+					
+					byte[] message = Arrays.copyOf(fos.toByteArray(), fos.size());
+					//byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+					//receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					
+					//Deserialize Data to udpMessage Object.
+					//UDPMessage udpMessageReceived = Serializer.deserialize(message);
+					
+					data = Serializer.deserialize(message);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -145,7 +158,7 @@ public class Reciever {
 		System.arraycopy(srcArr, start, destArr, 0, length);
 		return destArr;
 	}
-	public String getData(){
+	public UDPMessage getData(){
 		return data;
 	}
 

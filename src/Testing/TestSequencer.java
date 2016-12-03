@@ -66,6 +66,8 @@ public class TestSequencer {
 		parameterMap.put("destination", Enums.FlightCities.Montreal.toString());
 		parameterMap.put("date", "2016/12/1");
 		parameterMap.put("classFlight", Enums.Class.Economy.toString());
+		udpMsg.setParamters(parameterMap);
+		
 		boolean rqt1 = UPDCall(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, udpMsg);		
 		
 		udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.FlightCities.Washington, Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);

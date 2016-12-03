@@ -45,9 +45,10 @@ public class StaticContent {
 	//Configurations	
 	public static final String FRONT_END_IP_ADDRESS = "127.0.0.1";
 	public static final int FRONT_END_lISTENING_PORT = 1010;
+	public static final int FRONT_END_ACK_PORT = 1010;
 	
 	public static final String SEQUENCER_IP_ADDRESS = "127.0.0.1";
-	public static final int SEQUENCER_lISTENING_PORT = 1011;
+	public static final int SEQUENCER_lISTENING_PORT = 5555;
 	
 	public static final String RM1_IP_ADDRESS = "127.0.0.1";
 	public static final int RM1_lISTENING_PORT = 1012;

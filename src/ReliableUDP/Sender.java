@@ -13,6 +13,9 @@ import java.util.Vector;
 import java.util.concurrent.Semaphore;
 import java.util.zip.CRC32;
 
+import Models.UDPMessage;
+import Utilities.Serializer;
+
 // The following implementation uses the Go-Back-N protocol
 public class Sender {
 	static int data_size = 988;			// (checksum:8, seqNum:4, data<=988) Bytes : 1000 Bytes total
@@ -25,7 +28,7 @@ public class Sender {
 	Timer timer;				// for timeouts	
 	Semaphore s;				// guard CS for base, nextSeqNum
 	boolean isTransferComplete;	// if receiver has completely received the file
-	String data;
+	UDPMessage data;
 	String destinationAddress;
 	
 	// to start or stop the timer
@@ -43,12 +46,14 @@ public class Sender {
 		private int dst_port;
 		private InetAddress dst_addr;
 		private int recv_port;
+		private boolean isCloseOutGoingSocket;
 
 		// OutThread constructor
-		public OutThread(DatagramSocket sk_out, int dst_port, int recv_port) {
+		public OutThread(DatagramSocket sk_out, int dst_port, int recv_port, boolean isCloseOutGoingSocket) {
 			this.sk_out = sk_out;
 			this.dst_port = dst_port;
 			this.recv_port = recv_port;
+			this.isCloseOutGoingSocket = isCloseOutGoingSocket;
 		}
 		
 		// constructs the packet prepended with header information
@@ -74,7 +79,8 @@ public class Sender {
 			try{
 				 dst_addr = InetAddress.getByName(destinationAddress); // resolve dst_addr
 
-				 ByteArrayInputStream fis = new ByteArrayInputStream(data.getBytes());
+				 //ByteArrayInputStream fis = new ByteArrayInputStream(data.getBytes());
+				 ByteArrayInputStream fis = new ByteArrayInputStream(Serializer.serialize(data));
 				 
 				try {
 					// while there are still packets yet to be received by receiver
@@ -135,7 +141,14 @@ public class Sender {
 					e.printStackTrace();
 				} finally {
 					setTimer(false);	// close timer
-					sk_out.close();		// close outgoing socket
+					if(isCloseOutGoingSocket)
+					{
+						sk_out.close();		// close outgoing socket
+					}
+					else
+					{
+						
+					}
 					fis.close();		// close FileInputStream
 					System.out.println("Sender: sk_out closed!");
 				}
@@ -228,36 +241,52 @@ public class Sender {
 			}
 		}
 	}// END CLASS Timeout
-	
+	int sk1_dst_port;
+	int sk4_dst_port;
+	boolean isCloseOutGoingSocket = true;
+	DatagramSocket sk1; 
 	// sender constructor
-	public Sender(String destinationAddress, int sk1_dst_port, int sk4_dst_port, String data) {
+	public Sender(String destinationAddress, int sk1_dst_port, int sk4_dst_port, boolean isCloseOutGoingSocket) {
 		base = 0;
 		nextSeqNum = 0;
-
+		this.
 		packetsList = new Vector<byte[]>(win_size);
-		isTransferComplete = false;
-		DatagramSocket sk1, sk4;
+		this.sk1_dst_port = sk1_dst_port;
+		this.sk4_dst_port = sk4_dst_port;
+		isTransferComplete = false;		
 		s = new Semaphore(1);
 		System.out.println("Sender: sk1_dst_port=" + sk1_dst_port + ", sk4_dst_port=" + sk4_dst_port );
+		//this.data = data;
+		this.destinationAddress = destinationAddress;		
+		this.isCloseOutGoingSocket = isCloseOutGoingSocket;
+
+	}// END Sender constructor
+	
+	public  boolean send(UDPMessage data) {
 		this.data = data;
-		this.destinationAddress = destinationAddress;
-		
+		DatagramSocket sk4;
 		try {
 			// create sockets
-			sk1 = new DatagramSocket();				// outgoing channel
+			this.sk1 = new DatagramSocket();				// outgoing channel
 			sk4 = new DatagramSocket(sk4_dst_port);	// incoming channel
 
 			// create threads to process data
 			InThread th_in = new InThread(sk4);
-			OutThread th_out = new OutThread(sk1, sk1_dst_port, sk4_dst_port);
+			OutThread th_out = new OutThread(this.sk1, sk1_dst_port, sk4_dst_port,isCloseOutGoingSocket);
 			th_in.start();
 			th_out.start();
+			th_in.join();
+			th_out.join();
+			
+			return isTransferComplete;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
+			return false;
 		}
-	}// END Sender constructor
+		
+	}
 
 	// same as Arrays.copyOfRange in 1.6
 	public byte[] copyOfRange(byte[] srcArr, int start, int end){
@@ -265,6 +294,10 @@ public class Sender {
 		byte[] destArr = new byte[length];
 		System.arraycopy(srcArr, start, destArr, 0, length);
 		return destArr;
+	}
+	
+	public DatagramSocket getOutGoingSocket(){
+		return sk1 == null ? null : sk1;
 	}
 	
 }

@@ -178,8 +178,11 @@ public class SequencerMulticaster {
 					System.out.println(msg);
 					clogger.log(msg);
 					if (udpMessageReceived.getSequencerNumber() == udpMessage.getSequencerNumber())
+					{
 						clearBuffer(udpMessageReceived);
-					reply = true;
+						reply = true;
+					}
+					
 					break;
 
 				default:
