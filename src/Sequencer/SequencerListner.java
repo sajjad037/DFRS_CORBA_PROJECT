@@ -47,6 +47,8 @@ public class SequencerListner implements Runnable {
 				switch (udpMessage.getSender()) {
 				case FrontEnd:
 					increaseSequenceNumber();
+					udpMessage.setFrontEndPort(receivePacket.getPort());
+					udpMessage.setFrontEndIP(receivePacket.getAddress());
 					udpMessage.setSequencerNumber(sequencerNumber);
 					
 					// Multicast  Message in independent thread.
@@ -127,3 +129,4 @@ public class SequencerListner implements Runnable {
 	}
 
 }
+

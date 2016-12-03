@@ -137,15 +137,17 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				
 		String result = "0";
 		final String[][] resultInfo = new String[4][4];
-		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, false);
-		final DatagramSocket socket = s.getOutGoingSocket();	
 		
-//	final DatagramSocket socket = new DatagramSocket();			
-		System.out.println("my port:" + socket.getLocalPort());
-
-		
+		//Sending Request To Front End.
+		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, true);
 		Boolean status = s.send(new_msg);
-		System.err.println("status : " + status);
+		System.out.println("status : "+status);
+//		final DatagramSocket socket = s.getOutGoingSocket();	
+//		
+//		//final DatagramSocket socket = new DatagramSocket();			
+//		System.out.println("my port:" + socket.getLocalPort());		
+//		
+//		System.err.println("status : " + status);
 
 		
 //			InetAddress aHost = InetAddress.getByName(addressSequencer);
@@ -160,7 +162,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 //			socket.receive(replyPacket1);
 //			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));
 
-				
+		/*		
 		Thread t2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -228,11 +230,11 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				}
 			}
 
-		}
-		socket.close();
+		}*/
+		//socket.close();
 
-		result = compareResults(resultInfo);
-		System.out.println("final result: " + result);
+//		result = compareResults(resultInfo);
+//		System.out.println("final result: " + result);
 
 		return result;
 	}

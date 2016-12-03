@@ -18,7 +18,7 @@ public class Adding2 {
 		//Thread.sleep(1000);
 		//System.err.println("isTransferComplete : "+ s.isTransferComplete); 
 		
-		System.out.print("data recieved is : "+ r.getData().getSequencerNumber());
+		System.out.println("data recieved is : "+ r.getData().getSequencerNumber());
 		}
 
 	}

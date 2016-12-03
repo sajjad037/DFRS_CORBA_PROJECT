@@ -6,9 +6,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import FE.TimeOutTask;
+import Models.Enums;
+import Models.UDPMessage;
 import StaticContent.StaticContent;
+import Utilities.Serializer;
 
 public class Temp4Servers {
 
@@ -36,20 +41,29 @@ public class Temp4Servers {
 							byte[] buffer2 = new byte[1000];
 							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
 							socket.receive(requestPacket2);
-							String message = new String(requestPacket2.getData());
+							//String message = new String(requestPacket2.getData());
 							
-							//UdpMessage udpMsg = 
+							byte[] message = Arrays.copyOf(requestPacket2.getData(), requestPacket2.getLength());
+					        UDPMessage udpMessage = Serializer.deserialize(message);
+							
+					        int forntEndPort =udpMessage.getFrontEndPort();
+					        //InetAddress forntEndIP =
+					        
+					        InetAddress aHost = udpMessage.getFrontEndIP();
 							
 							System.out.println("Result message received: " + message + " address: "
 									+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
 							
 							String msgACK = new_ans;
 							DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(),
-									requestPacket2.getAddress(), requestPacket2.getPort());
+									aHost , forntEndPort);
 							socket.send(replyPacket2);
 							System.out.println(msgACK);
 
 						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ClassNotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}

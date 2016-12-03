@@ -2,6 +2,8 @@ package Sequencer;
 
 import java.util.logging.Logger;
 
+import ReliableUDP.Reciever;
+import StaticContent.StaticContent;
 import Utilities.CLogger;
 
 public class SequencerMain {
@@ -19,11 +21,21 @@ public class SequencerMain {
 			clogger.log(msg);
 			System.out.println(msg);
 
-			// Start UDP Server
-			SequencerListner server = new SequencerListner(clogger);
-			server.start();
-			//server.executeTestMessage();
-			server.join();
+//			// Start UDP Server
+//			SequencerListner server = new SequencerListner(clogger);
+//			server.start();
+//			//server.executeTestMessage();
+//			server.join();
+			
+			while(true){
+				Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT);
+				
+				//Thread.sleep(1000);
+				//System.err.println("isTransferComplete : "+ s.isTransferComplete); 
+				
+				System.out.println("data recieved is : "+ r.getData().getSequencerNumber());				
+			}
+
 			
 
 		} catch (Exception e) {

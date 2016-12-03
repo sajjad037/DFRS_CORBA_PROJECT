@@ -1,6 +1,7 @@
 package Models;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.util.HashMap;
 
 import Models.Enums.FlightCities;
@@ -30,6 +31,7 @@ public class UDPMessage implements Serializable {
 	int returnID;
 	String replyMsg;
 	int FrontEndPort;
+	InetAddress FrontEndIP;
 	String ManagerID;
 
 	/**
@@ -210,6 +212,20 @@ public class UDPMessage implements Serializable {
 	 */
 	public void setManagerID(String managerID) {
 		ManagerID = managerID;
+	}
+
+	/**
+	 * @return the frontEndIP
+	 */
+	public InetAddress getFrontEndIP() {
+		return FrontEndIP;
+	}
+
+	/**
+	 * @param frontEndIP the frontEndIP to set
+	 */
+	public void setFrontEndIP(InetAddress frontEndIP) {
+		FrontEndIP = frontEndIP;
 	}
 	
 	
