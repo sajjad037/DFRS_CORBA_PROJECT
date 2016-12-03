@@ -13,7 +13,7 @@ public class Adding2 {
 	public static void main(String[] args) throws InterruptedException {
 		
 		while(true){
-		Reciever r = new Reciever(1000,2000);
+		Reciever r = new Reciever(10091,2000);
 		
 		//Thread.sleep(1000);
 		//System.err.println("isTransferComplete : "+ s.isTransferComplete); 

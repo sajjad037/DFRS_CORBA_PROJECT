@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 import FE.TimeOutTask;
 import ReliableUDP.Reciever;
+import ReliableUDP.Sender;
 import StaticContent.StaticContent;
 
 public class Temp4Servers {
@@ -49,10 +50,13 @@ public class Temp4Servers {
 						int portFE = r.getData().getFrontEndPort();
 						System.out.println("abc port: "+ portFE);
 						
-				//		DatagramSocket s = new DatagramSocket(portFE);
+			//			DatagramSocket s = new DatagramSocket(portFE);
 						
-						DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
-						socket.send(requestPacket1);
+			//			DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
+			//			socket.send(requestPacket1);
+						
+						Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
+						s.send(r.getData());
 						
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block

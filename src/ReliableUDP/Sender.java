@@ -20,9 +20,9 @@ import Utilities.Serializer;
 
 // The following implementation uses the Go-Back-N protocol
 public class Sender {
-	static int data_size = 988; // (checksum:8, seqNum:4, data<=988) Bytes :
+	static int data_size = 4000; // (checksum:8, seqNum:4, data<=988) Bytes :
 								// 1000 Bytes total
-	static int win_size = 10;
+	static int win_size = 4000;
 	static int timeoutVal = 300; // 300ms until timeout
 
 	int base; // base sequence number of window
