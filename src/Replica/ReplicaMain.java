@@ -11,6 +11,15 @@ public class ReplicaMain {
 	private static CLogger clogger;
 	private final static Logger LOGGER = Logger.getLogger(ReplicaMain.class.getName());
 	
+	/*
+	 * Reason of this class:
+	 * 1) Create MTL, WSL, NDH server objects using ORB.
+	 * 2) Listen to all incoming messages from sequencer and respective RM.
+	 * 3) Parse the incoming UDP request and call it in the actual server object.
+	 * 4) Replica always reply to FrontEnd port that is in UDP Object.
+	 * 5) Any request that comes from Sequencer should be saved in a file as backup so that it can be restored when the replica is started again.
+	 */
+	
 	public static void main(String[] args) {
 		String msg ="";
 		try {
@@ -21,7 +30,7 @@ public class ReplicaMain {
 			System.out.println(msg);
 
 			// Start UDP Server
-			ReplicaManagerListner server = new ReplicaManagerListner(clogger, StaticContent.RM1_lISTENING_PORT, Enums.UDPSender.ReplicaUlan);
+			ReplicaListner server = new ReplicaListner(clogger, StaticContent.RM1_lISTENING_PORT, Enums.UDPSender.ReplicaUlan);
 			server.start();
 			//server.executeTestMessage();
 			server.join();
