@@ -44,37 +44,37 @@ public class StaticContent {
 	
 	//Configurations	
 	public static final String FRONT_END_IP_ADDRESS = "127.0.0.1";
-	public static final int FRONT_END_lISTENING_PORT = 1010;
-	public static final int FRONT_END_ACK_PORT = 1010;
+	public static final int FRONT_END_lISTENING_PORT = 5501;
+	public static final int FRONT_END_ACK_PORT = 5502;
 	
 	public static final String SEQUENCER_IP_ADDRESS = "127.0.0.1";
-	public static final int SEQUENCER_lISTENING_PORT = 5555;
-	public static final int SEQUENCER_ACK_PORT = 5556;
+	public static final int SEQUENCER_lISTENING_PORT = 5551;
+	public static final int SEQUENCER_ACK_PORT = 5552;
 	
 	public static final String RM1_IP_ADDRESS = "127.0.0.1";
-	public static final int RM1_lISTENING_PORT = 1012;
+	public static final int RM1_lISTENING_PORT = 5051;
 	
 	public static final String RM2_IP_ADDRESS = "127.0.0.1";
-	public static final int RM2_lISTENING_PORT = 1013;
+	public static final int RM2_lISTENING_PORT = 5052;
 
 	public static final String RM3_IP_ADDRESS = "127.0.0.1";
-	public static final int RM3_lISTENING_PORT = 1014;
+	public static final int RM3_lISTENING_PORT = 5053;
 
 	public static final String RM4_IP_ADDRESS = "127.0.0.1";
-	public static final int RM4_lISTENING_PORT = 1015;
+	public static final int RM4_lISTENING_PORT = 5054;
 	
 	
 	public static final String REPLICA_ULAN_IP_ADDRESS = "127.0.0.1";
-	public static final int REPLICA_ULAN_lISTENING_PORT = 1016;
+	public static final int REPLICA_ULAN_lISTENING_PORT = 5001;
 	
 	public static final String REPLICA_SAJJAD_IP_ADDRESS = "127.0.0.1";
-	public static final int REPLICA_SAJJAD_lISTENING_PORT = 1017;
+	public static final int REPLICA_SAJJAD_lISTENING_PORT = 5002;
 	
 	public static final String REPLICA_UMER_IP_ADDRESS = "127.0.0.1";
-	public static final int REPLICA_UMER_lISTENING_PORT = 1018;
+	public static final int REPLICA_UMER_lISTENING_PORT = 5003;
 	
 	public static final String REPLICA_FERAS_IP_ADDRESS = "127.0.0.1";
-	public static final int REPLICA_FERAS_lISTENING_PORT = 1019;
+	public static final int REPLICA_FERAS_lISTENING_PORT = 5004;
 	
 	
 	
