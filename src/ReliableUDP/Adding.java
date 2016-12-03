@@ -35,7 +35,7 @@ public class Adding {
 		parameterMap.put("classFlight", Enums.Class.Economy.toString());
 		udpMsg.setParamters(parameterMap);
 
-		Sender s = new Sender("127.0.0.2", 10091, 2000, true, new DatagramSocket());
+		Sender s = new Sender("127.0.0.2", 10091, 2000, false, new DatagramSocket());
 		Boolean status = s.send(udpMsg);
 		System.err.println("isTransferComplete : " + s.isTransferComplete);
 		System.err.println("status : " + status);

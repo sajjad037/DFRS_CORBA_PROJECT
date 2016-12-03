@@ -28,7 +28,7 @@ public class SequencerMain {
 //			server.join();
 			
 			while(true){
-				Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT);
+				Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT);
 				
 				//Thread.sleep(1000);
 				//System.err.println("isTransferComplete : "+ s.isTransferComplete); 
