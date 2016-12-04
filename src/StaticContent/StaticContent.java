@@ -17,7 +17,6 @@ public class StaticContent {
 	public static final boolean Save_TO_FILES = false;
 	
 	public static final String RM_TRANSACTION_LOGS_PATH = "Logs/Replica/transactions/";
-
 	
 	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
 	public static final int UDP_RECEIVE_TIMEOUT = 300;
@@ -53,7 +52,7 @@ public class StaticContent {
 	public static final int FRONT_END_lISTENING_PORT = 5501;
 	public static final int FRONT_END_ACK_PORT = 5502;
 	public static final int FRONTEND_ACK_PORT_FOR_REPLICA_UMER = 5564;
-	
+
 	public static final String SEQUENCER_IP_ADDRESS = "127.0.0.1";
 	public static final int SEQUENCER_lISTENING_PORT = 5551;
 	public static final int SEQUENCER_ACK_PORT = 5552;
@@ -77,15 +76,19 @@ public class StaticContent {
 	
 	public static final String REPLICA_ULAN_IP_ADDRESS = "127.0.0.1";
 	public static final int REPLICA_ULAN_lISTENING_PORT = 5001;
+	public static final int REPLICA_ULAN_HEARTBEAT_ACK_PORT = 5008;
 	
 	public static final String REPLICA_SAJJAD_IP_ADDRESS = "127.0.0.1";
 	public static final int REPLICA_SAJJAD_lISTENING_PORT = 5002;
+	public static final int REPLICA_SAJJAD_HEARTBEAT_ACK_PORT = 5007;
 	
 	public static final String REPLICA_UMER_IP_ADDRESS = "127.0.0.1";
 	public static final int REPLICA_UMER_lISTENING_PORT = 5003;
+	public static final int REPLICA_UMER_HEARTBEAT_ACK_PORT = 5005;
 	
 	public static final String REPLICA_FERAS_IP_ADDRESS = "127.0.0.1";
 	public static final int REPLICA_FERAS_lISTENING_PORT = 5004;
+	public static final int REPLICA_FERAS_HEARTBEAT_ACK_PORT = 5006;
 	
 	
 	
