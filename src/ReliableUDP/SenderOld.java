@@ -19,7 +19,7 @@ import Models.UDPMessage;
 import Utilities.Serializer;
 
 // The following implementation uses the Go-Back-N protocol
-public class Sender {
+public class SenderOld {
 	static int data_size = 4000; // (checksum:8, seqNum:4, data<=988) Bytes :
 								// 1000 Bytes total
 	static int win_size = 4000;
@@ -49,15 +49,15 @@ public class Sender {
 		private DatagramSocket sk_out;
 		private int dst_port;
 		private InetAddress dst_addr;
-		//private int recv_port;
+		private int recv_port;
 		private boolean isCloseOutGoingSocket;
 
 		// OutThread constructor
-		public OutThread(DatagramSocket sk_out, int dst_port, /*int recv_port,*/
+		public OutThread(DatagramSocket sk_out, int dst_port, int recv_port,
 				boolean isCloseOutGoingSocket) {
 			this.sk_out = sk_out;
 			this.dst_port = dst_port;
-			//this.recv_port = recv_port;
+			this.recv_port = recv_port;
 			this.isCloseOutGoingSocket = isCloseOutGoingSocket;
 		}
 
@@ -222,7 +222,7 @@ public class Sender {
 
 						sk_in.receive(in_pkt);
 						int ackNum = decodePacket(in_data);
-					//	System.out.println("Sender: Received Ack " + ackNum);
+						System.out.println("Sender: Received Ack " + ackNum);
 
 						// if ack is not corrupted
 						if (ackNum != -1) {
@@ -260,8 +260,8 @@ public class Sender {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					//sk_in.close();
-			//		System.out.println("Sender: sk_in closed!");
+					sk_in.close();
+					System.out.println("Sender: sk_in closed!");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -287,21 +287,22 @@ public class Sender {
 	}// END CLASS Timeout
 
 	int sk1_dst_port;
-	//int sk4_dst_port;
+	int sk4_dst_port;
 	boolean isCloseOutGoingSocket = true;
 	DatagramSocket sk1;
 
 	// sender constructor
-	public Sender(String destinationAddress, int sk1_dst_port,
-			/*int sk4_dst_port,*/ boolean isCloseOutGoingSocket, DatagramSocket p) {
+	public SenderOld(String destinationAddress, int sk1_dst_port,
+			int sk4_dst_port, boolean isCloseOutGoingSocket, DatagramSocket p) {
 		base = 0;
 		nextSeqNum = 0;
 		this.packetsList = new Vector<byte[]>(win_size);
 		this.sk1_dst_port = sk1_dst_port;
-		//this.sk4_dst_port = sk4_dst_port;
+		this.sk4_dst_port = sk4_dst_port;
 		isTransferComplete = false;
 		s = new Semaphore(1);
-		//System.out.println("Sender: sk1_dst_port=" + sk1_dst_port+ ", sk4_dst_port=" + sk4_dst_port);
+		System.out.println("Sender: sk1_dst_port=" + sk1_dst_port
+				+ ", sk4_dst_port=" + sk4_dst_port);
 		// this.data = data;
 		this.destinationAddress = destinationAddress;
 		this.isCloseOutGoingSocket = isCloseOutGoingSocket;
@@ -315,11 +316,11 @@ public class Sender {
 		DatagramSocket sk4;
 		try {
 			// create sockets
-			//sk4 = new DatagramSocket(sk4_dst_port); // incoming channel
+			sk4 = new DatagramSocket(sk4_dst_port); // incoming channel
 			// create threads to process data
-			InThread th_in = new InThread(this.sk1);
+			InThread th_in = new InThread(sk4);
 			OutThread th_out = new OutThread(this.sk1, sk1_dst_port,
-					/*sk4_dst_port,*/ isCloseOutGoingSocket);
+					sk4_dst_port, isCloseOutGoingSocket);
 			th_in.start();
 			th_out.start();
 			th_in.join();

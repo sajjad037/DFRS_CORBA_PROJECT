@@ -19,7 +19,7 @@ public class StaticContent {
 	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
 	public static final int UDP_RECEIVE_TIMEOUT = 300;
 	
-	public static final int FRONT_END_SERVER_REPLY_TIME_OUT = 3000;
+	public static final int FRONT_END_SERVER_REPLY_TIME_OUT = 10000;
 	
 	
 	// Error Messages
