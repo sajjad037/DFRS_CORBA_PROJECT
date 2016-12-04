@@ -147,6 +147,12 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					StaticContent.FRONT_END_ACK_PORT, false, socket);
 
 			new_msg.setFrontEndPort(socket.getLocalPort());
+			try {
+				new_msg.setFrontEndIP(InetAddress.getByName(StaticContent.FRONT_END_IP_ADDRESS));
+			} catch (UnknownHostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			Boolean status = s.send(new_msg);
 

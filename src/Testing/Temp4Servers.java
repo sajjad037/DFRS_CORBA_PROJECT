@@ -29,40 +29,39 @@ public class Temp4Servers {
 			
 			Thread t2 = new Thread(new Runnable() {
 				@Override
-				public void run() {
+				public void run() {			
+					System.out.println("server is waiting, ip: "+ ip_address+" , port: "+ port);
 						
-						Reciever r = new Reciever(port, acknowledgementPort);
+					Reciever r = new Reciever(port, acknowledgementPort);
 
-						System.out.println("the data received is : "
-								+ r.getData().getServerName());
-						
-						System.out.println("the data received is : "
-								+ r.getData().getSender());
-						
-						
-						
+						System.out.println("the data received is : ");
+						System.out.println("sender: "+r.getData().getSender());
+						System.out.println("front end ip: "+r.getData().getFrontEndIP());
+						System.out.println("front end port: "+r.getData().getFrontEndPort());
+						System.out.println("server name: "+r.getData().getServerName());
+						System.out.println("manager id: "+r.getData().getManagerID());
+						System.out.println("sequence number: "+r.getData().getSequencerNumber());
+						System.out.println("operation: "+r.getData().getOpernation());
+						System.out.println("reply message: "+r.getData().getReplyMsg());
+						System.out.println("message parameters: "+r.getData().getParamters());
+										
 						
 						InetAddress aHostFE;
 						try {
-							aHostFE = InetAddress.getByName(StaticContent.FRONT_END_IP_ADDRESS);
+							aHostFE = r.getData().getFrontEndIP();
+							int portFE = r.getData().getFrontEndPort();
 						
-						int portFE = r.getData().getFrontEndPort();
-						System.out.println("abc port: "+ portFE);
+							DatagramSocket socket = new DatagramSocket();		
+							DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
 						
-			//			DatagramSocket s = new DatagramSocket(portFE);
-						DatagramSocket socket = new DatagramSocket();
-						System.out.println("my socket is : "+ socket.getLocalPort());
-						
-						DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
-						
-						if(port!= StaticContent.REPLICA_FERAS_lISTENING_PORT)
-						socket.send(requestPacket1);
+							if(port!= StaticContent.REPLICA_FERAS_lISTENING_PORT)
+								socket.send(requestPacket1);
 						
 				//		Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
 				//		s.send(r.getData());
-						if(socket!=null){
-							socket.close();
-						}
+							if(socket!=null){
+								socket.close();
+							}
 						
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block
