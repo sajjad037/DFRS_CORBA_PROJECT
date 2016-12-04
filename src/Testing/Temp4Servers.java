@@ -54,7 +54,7 @@ public class Temp4Servers {
 							DatagramSocket socket = new DatagramSocket();		
 							DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
 						
-							if(port!= StaticContent.REPLICA_FERAS_lISTENING_PORT)
+						//	if(port!= StaticContent.REPLICA_FERAS_lISTENING_PORT)
 								socket.send(requestPacket1);
 						
 				//		Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
