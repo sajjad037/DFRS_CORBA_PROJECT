@@ -178,42 +178,32 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					while (isWaiting2) {
 						try {
 							System.out.println("waiting for UDP message i: " + i);
-							
-
 
 							// Reciever r = new Reciever(socket);
 							
-						//		byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+//							String message = r.getData().getReplyMsg();
+								
+							byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+									
+							socket.receive(receivePacket);
 							
-							// receivePacket = new DatagramPacket(receiveData, receiveData.length);
-					//		socket.receive(receivePacket);
+					//		byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+					//		UDPMessage udpMessageReceived = Serializer.deserialize(message);
+							
+							receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 
-				//			byte[] message2 = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
-
-							// Deserialize Data to udpMessage Object.
-					//		UDPMessage udpMessageReceived = Serializer.deserialize(message2);
-
-						//	receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-
-							// String message = r.getData().getReplyMsg();
-						//	String message =new String(receivePacket.getData());
 							
-							
-//							
-//							String[] arr = message.split(":");							
-							
-							byte[] buffer2 = new byte[1000];
-							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-							socket.receive(requestPacket2);
-							
-							if(requestPacket2.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
-							
-								String message = new String(requestPacket2.getData());
-								System.out.println("Result message received: " + message + " address: "+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
-								resultInfo[i][0] = "0";
-								resultInfo[i][1] = message;
-								resultInfo[i][2] = requestPacket2.getAddress().toString();
-								resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+							if(receivePacket.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
+								System.out.println("received:"+new String(receivePacket.getData()));
+								String[] arr = new String(receivePacket.getData()).split(":");
+						
+							//	resultInfo[i][0] = "0";
+								resultInfo[i][0] = arr[0];
+								//resultInfo[i][1] = udpMessageReceived.getReplyMsg();
+								resultInfo[i][1] = arr[1];
+								resultInfo[i][2] = receivePacket.getAddress().toString();
+								resultInfo[i][3] = Integer.toString(receivePacket.getPort());
 								i++;
 
 								if (i == 4) {
@@ -230,7 +220,6 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				}
 			});
 			t2.start();
-			// t2.join();
 
 			Timer timer = new Timer();
 			TimeOutTask timeOutTask = null;

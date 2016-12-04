@@ -42,7 +42,6 @@ public class Temp4Servers {
 					DatagramSocket scoketReceiver = null;
 					scoketReceiver = new DatagramSocket(port);
 
-					//boolean isrun = true;
 					Reciever r = new Reciever(scoketReceiver);
 					UDPMessage udpMessage = r.getData();
 					System.out.println("the data received is : ");
@@ -61,59 +60,30 @@ public class Temp4Servers {
 
 					aHostFE = r.getData().getFrontEndIP();
 					int portFE = r.getData().getFrontEndPort();
-					// scoketReceiver.close();
-					// DatagramSocket socket = new DatagramSocket();
-					// DatagramPacket requestPacket1 = new
-					// DatagramPacket(new_ans.getBytes(), new_ans.length(),
-					// aHostFE, portFE);
-					//
-					// // if(port!= StaticContent.REPLICA_FERAS_lISTENING_PORT)
-					// socket.send(requestPacket1);
-
-					//DatagramSocket socket = new DatagramSocket();
+					
 					System.out.println("Now I am sending for Foront End  : " + portFE);
 					
 					
 				//	Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, true, socket);
-				//	UDPMessage udpMessageReply = new  UDPMessage(Enums.UDPSender.ReplicaUlan, udpMessage.getSequencerNumber(), udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
-				//	udpMessageReply.setReplyMsg("true:"+new_ans);
+				
 					
-				//	s.send(udpMessage);
+		//			UDPMessage udpMessageReply = new  UDPMessage(Enums.UDPSender.ReplicaUlan, udpMessage.getSequencerNumber(), udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
+		//			udpMessageReply.setReplyMsg("true:"+new_ans);
 					
-				//	String udpMessageReply = "true:"+new_ans;
+					String udpMessageReply = "true:"+new_ans;
 					
-				//	byte[] sendData = Serializer.serialize(udpMessageReply);
-					//Send UDP Message
-					
-//					String msgACK = "true:"+new_ans;
-//					System.out.println(msgACK);
-//					DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), aHostFE, portFE);
-//					socket.send(replyPacket2);
-					
-					
-				//	DatagramPacket replyPacket = new DatagramPacket(udpMessageReply.getBytes(), udpMessageReply.length(), aHostFE, portFE);
-				//	socket.send(replyPacket);
-			//		sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-//					if (socket != null) {
-//						socket.close();
-//					}
-					
-					aHostFE = InetAddress.getByName(StaticContent.FRONT_END_IP_ADDRESS);
-					
-					portFE = r.getData().getFrontEndPort();
-					System.out.println("abc port: "+ portFE);
-					
-		//			DatagramSocket s = new DatagramSocket(portFE);
+		//			s.send(udpMessage);
+						
+		//			byte[] sendData = Serializer.serialize(udpMessageReply);
+										
 					DatagramSocket socket = new DatagramSocket();
 					System.out.println("my socket is : "+ socket.getLocalPort());
-					String msg = "true:"+new_ans;
-					System.out.println("THE WORD: "+msg);
-					//new_ans ="true:"+new_ans;
-					DatagramPacket requestPacket1 = new DatagramPacket(msg.getBytes(), msg.length(), aHostFE, portFE);
-					socket.send(requestPacket1);
-					
-			//		Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());
-			//		s.send(r.getData());
+				
+			//		DatagramPacket replyPacket = new DatagramPacket(sendData, sendData.length, aHostFE, portFE);
+					DatagramPacket replyPacket = new DatagramPacket(udpMessageReply.getBytes(), udpMessageReply.length(), aHostFE, portFE);
+					socket.send(replyPacket);
+			//		sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+								
 					if(socket!=null){
 						socket.close();
 					}
