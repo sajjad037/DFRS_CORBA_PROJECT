@@ -176,20 +176,42 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					int i = 0;
 					boolean isWaiting2 = true;
 					while (isWaiting2) {
-						try {
-
+				//		try {
 							System.out.println("waiting for UDP message i: " + i);
-							byte[] buffer2 = new byte[1000];
-							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-							socket.receive(requestPacket2);
+							
+							
+							int a = 0;
+							if(!socket.isClosed()){
+								a = socket.getLocalPort();
+							}
+							socket.close();
+							Reciever r = new Reciever(a, StaticContent.FRONTEND_ACK_PORT_FOR_REPLICA_UMER);
 
-							String message = new String(requestPacket2.getData());
-							System.out.println("Result message received: " + message + " address: "
-									+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
-							resultInfo[i][0] = "0";
-							resultInfo[i][1] = message;
-							resultInfo[i][2] = requestPacket2.getAddress().toString();
-							resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+							System.out.println("the data received is : "
+									+ r.getData().getServerName());
+							
+							
+							String message = r.getData().getReplyMsg();
+							
+							String[] arr = message.split(":");
+
+							
+							
+					//		byte[] buffer2 = new byte[1000];
+					//		DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
+					//		socket.receive(requestPacket2);
+
+					//		String message = new String(requestPacket2.getData());
+					//		System.out.println("Result message received: " + message + " address: "
+					//				+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
+							resultInfo[i][0] = arr[0];
+							resultInfo[i][1] = arr[1];
+							resultInfo[i][2] = "";///requestPacket2.getAddress().toString();
+							resultInfo[i][3] = "";//Integer.toString(requestPacket2.getPort());
+
+							
+					//		resultInfo[i][2] = requestPacket2.getAddress().toString();
+					//		resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
 
 							i++;
 
@@ -198,10 +220,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 								System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
 								break;
 							}
-						} catch (IOException e) {
+					//	} catch (IOException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					//		e.printStackTrace();
+					//	}
 					}
 				}
 			});
@@ -236,7 +258,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 					for (int k = 0; k < 4; k++) {
 						if (resultInfo[k][1] == null) {
-							resultInfo[k][0] = "0";
+							resultInfo[k][0] = "false";
 							resultInfo[k][1] = "X";
 							resultInfo[k][2] = "X";
 							resultInfo[k][3] = "X";
