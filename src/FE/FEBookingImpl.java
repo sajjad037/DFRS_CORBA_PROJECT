@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -17,6 +18,7 @@ import Models.UDPMessage;
 import ReliableUDP.Reciever;
 import ReliableUDP.Sender;
 import StaticContent.StaticContent;
+import Utilities.Serializer;
 
 public class FEBookingImpl extends FEBookingIntPOA {
 
@@ -138,13 +140,18 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 		String result = "0";
 		final String[][] resultInfo = new String[4][4];
-		System.out.println("a");
-		final DatagramSocket socket;
-		try {
-			socket = new DatagramSocket();
+		// System.out.println("a");
 
-			Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT,
-					StaticContent.FRONT_END_ACK_PORT, false, socket);
+		try {
+			final DatagramSocket socket = new DatagramSocket();
+
+			// Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS,
+			// StaticContent.SEQUENCER_lISTENING_PORT,
+			// StaticContent.FRONT_END_ACK_PORT, false, socket);
+			System.out.println("my socket port :" + socket.getLocalPort());
+
+			Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, false,
+					socket);
 
 			new_msg.setFrontEndPort(socket.getLocalPort());
 			try {
@@ -158,77 +165,61 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 			System.out.println(status);
 
-			/*
-			 * while(true){
-			 * 
-			 * Reciever r = new Reciever(a, StaticContent.FRONT_END_ACK_PORT);
-			 * 
-			 * System.out.println("the data received is : " +
-			 * r.getData().getServerName());
-			 * 
-			 * System.out.println("the data received is : " +
-			 * r.getData().getSender()); }
-			 */
+			final int a = socket.getLocalPort();
+			System.out.println("aa = " + a);
+			// socket.close();
 
 			Thread t2 = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					int i = 0;
+					int a = 0;
 					boolean isWaiting2 = true;
 					while (isWaiting2) {
-				//		try {
+						try {
 							System.out.println("waiting for UDP message i: " + i);
+
+							// Reciever r = new Reciever(socket);
 							
+//							String message = r.getData().getReplyMsg();
+								
+							byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+									
+							socket.receive(receivePacket);
 							
-							int a = 0;
-							if(!socket.isClosed()){
-								a = socket.getLocalPort();
+					//		byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+					//		UDPMessage udpMessageReceived = Serializer.deserialize(message);
+							
+							receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+
+							
+							if(receivePacket.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
+								System.out.println("received:"+new String(receivePacket.getData()));
+								String[] arr = new String(receivePacket.getData()).split(":");
+						
+							//	resultInfo[i][0] = "0";
+								resultInfo[i][0] = arr[0];
+								//resultInfo[i][1] = udpMessageReceived.getReplyMsg();
+								resultInfo[i][1] = arr[1];
+								resultInfo[i][2] = receivePacket.getAddress().toString();
+								resultInfo[i][3] = Integer.toString(receivePacket.getPort());
+								i++;
+
+								if (i == 4) {
+									isWaiting2 = false;
+									System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
+									break;
+								}
 							}
-							socket.close();
-							Reciever r = new Reciever(a, StaticContent.FRONTEND_ACK_PORT_FOR_REPLICA_UMER);
-
-							System.out.println("the data received is : "
-									+ r.getData().getServerName());
-							
-							
-							String message = r.getData().getReplyMsg();
-							
-							String[] arr = message.split(":");
-
-							
-							
-					//		byte[] buffer2 = new byte[1000];
-					//		DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-					//		socket.receive(requestPacket2);
-
-					//		String message = new String(requestPacket2.getData());
-					//		System.out.println("Result message received: " + message + " address: "
-					//				+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
-							resultInfo[i][0] = arr[0];
-							resultInfo[i][1] = arr[1];
-							resultInfo[i][2] = "";///requestPacket2.getAddress().toString();
-							resultInfo[i][3] = "";//Integer.toString(requestPacket2.getPort());
-
-							
-					//		resultInfo[i][2] = requestPacket2.getAddress().toString();
-					//		resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
-
-							i++;
-
-							if (i == 4) {
-								isWaiting2 = false;
-								System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
-								break;
-							}
-					//	} catch (IOException e) {
+						} catch (IOException e) {
 							// TODO Auto-generated catch block
-					//		e.printStackTrace();
-					//	}
+							e.printStackTrace();
+						}
 					}
 				}
 			});
 			t2.start();
-			// t2.join();
 
 			Timer timer = new Timer();
 			TimeOutTask timeOutTask = null;
@@ -239,9 +230,9 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			int count = 0;
 			while (isWaiting) {
 				count++;
-				System.out.print(count + " ");
+				// System.out.print(count + " ");
 				if (count % 20 == 0) {
-					System.out.println();
+					// System.out.println();
 				}
 
 				if (timeOutTask.getTimeOut() || !t2.isAlive()) {
@@ -250,9 +241,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 					if (timeOutTask.getTimeOut()) {
 						System.out.println("time out has occured:");
-					}
-					else if(!t2.isAlive())
-					{
+					} else if (!t2.isAlive()) {
 						System.out.println("All Messages arrived.");
 					}
 
@@ -271,7 +260,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				}
 
 			}
-			socket.close();
+			// socket.close();
 
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block

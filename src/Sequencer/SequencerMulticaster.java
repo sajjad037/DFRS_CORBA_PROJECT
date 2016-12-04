@@ -169,7 +169,8 @@ public class SequencerMulticaster {
 				
 				socket= new DatagramSocket();
 				
-				Sender s = new Sender(destinationIP, destinationPort, acknowledgementPort, false, socket);
+				//Sender s = new Sender(destinationIP, destinationPort, acknowledgementPort, false, socket);
+				Sender s = new Sender(destinationIP, destinationPort, false, socket);
 				if(s.send(udpMessage))
 				{
 					//release Port

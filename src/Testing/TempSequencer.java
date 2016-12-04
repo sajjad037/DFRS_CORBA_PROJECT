@@ -1,13 +1,8 @@
 package Testing;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
-import FE.TimeOutTask;
 import Models.UDPMessage;
 import ReliableUDP.Reciever;
 import ReliableUDP.Sender;
@@ -15,16 +10,16 @@ import StaticContent.StaticContent;
 
 public class TempSequencer {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SocketException {
 
 		System.out.println("Temp sequencer is up and running.");
 
 		boolean isWaiting = true;
-
+		DatagramSocket scoketReceiver = null;
+		scoketReceiver = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
 		while (isWaiting) {
 
-			Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT,
-					StaticContent.FRONT_END_ACK_PORT);
+			Reciever r = new Reciever(scoketReceiver);
 
 			System.out.println("the data received is : "
 					+ r.getData().getServerName());
@@ -45,13 +40,14 @@ public class TempSequencer {
 				e.printStackTrace();
 			}
 		}
+		scoketReceiver.close();
 
 	}
 	
 	
 	public static void sendDoc(UDPMessage udpMsg, String aHost, int aPort, int ackPort) throws SocketException{
 					
-			Sender s = new Sender(aHost, aPort, ackPort, false, new DatagramSocket());
+			Sender s = new Sender(aHost, aPort, false, new DatagramSocket());
 			
 			s.send(udpMsg);
 			
