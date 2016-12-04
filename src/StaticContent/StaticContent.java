@@ -16,6 +16,9 @@ public class StaticContent {
 	public static final String BASE_PATH = "C:/FlightManagerWebService/";
 	public static final boolean Save_TO_FILES = false;
 	
+	
+
+	
 	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
 	public static final int UDP_RECEIVE_TIMEOUT = 300;
 	
