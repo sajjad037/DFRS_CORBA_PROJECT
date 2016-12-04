@@ -16,13 +16,13 @@ public class StaticContent {
 	public static final String BASE_PATH = "C:/FlightManagerWebService/";
 	public static final boolean Save_TO_FILES = false;
 	
-	
+	public static final String RM_TRANSACTION_LOGS_PATH = "Logs/Replica/transactions/";
 
 	
 	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
 	public static final int UDP_RECEIVE_TIMEOUT = 300;
 	
-	public static final int FRONT_END_SERVER_REPLY_TIME_OUT = 3000;
+	public static final int FRONT_END_SERVER_REPLY_TIME_OUT = 10000;
 	
 	
 	// Error Messages
