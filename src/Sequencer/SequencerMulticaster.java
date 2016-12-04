@@ -3,6 +3,7 @@ package Sequencer;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +45,10 @@ public class SequencerMulticaster {
 		bufferRMSajjad.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMUmer.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMFeras.put(udpMessage.getSequencerNumber() + "", udpMessage);
-
+		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        System.out.println("Start Sending : "+timestamp);
+		
 		int count = 4;
 		Thread[] threads = new Thread[count];
 		MulticastThread[] multicastThread = new MulticastThread[count];
@@ -70,6 +74,9 @@ public class SequencerMulticaster {
 		threads[3] = new Thread(multicastThread[3]);
 		threads[3].start();
 
+		timestamp = new Timestamp(System.currentTimeMillis());
+		System.out.println("After Thread Start : "+timestamp);
+        
 		String msg = "";
 		// get data from threads
 		for (int i = 0; i < count; i++) {
@@ -93,6 +100,9 @@ public class SequencerMulticaster {
 
 			}
 		}
+		
+		timestamp = new Timestamp(System.currentTimeMillis());
+		System.out.println("At End : "+timestamp);
 
 	}
 

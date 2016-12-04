@@ -21,8 +21,8 @@ import StaticContent.StaticContent;
 public class FEBookingImpl extends FEBookingIntPOA {
 
 	private ORB orb;
-//	private int portSequencer = 5555;
-//	private String addressSequencer = "127.0.0.1";
+	// private int portSequencer = 5555;
+	// private String addressSequencer = "127.0.0.1";
 
 	public FEBookingImpl() {
 	}
@@ -35,8 +35,9 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 		String[] arr = firstName.split(":");
 		// server manager cmd firstName
-//		String msg = arr[0] + "|" + arr[1] + ":" + "bookFlight:" + arr[3] + ":" + lastName + ":" + address + ":" + phone
-//				+ ":" + destination + ":" + date + ":" + classFlight;
+		// String msg = arr[0] + "|" + arr[1] + ":" + "bookFlight:" + arr[3] +
+		// ":" + lastName + ":" + address + ":" + phone
+		// + ":" + destination + ":" + date + ":" + classFlight;
 
 		// Fornt End Send Request
 		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
@@ -49,11 +50,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		parameterMap.put("destination", destination);
 		parameterMap.put("date", date);
 		parameterMap.put("classFlight", classFlight);
-		udpMsg.setParamters(parameterMap);		
-		udpMsg.setManagerID(arr[1]);		
-		udpMsg.setFrontEndPort(-1);		
-		
-	
+		udpMsg.setParamters(parameterMap);
+		udpMsg.setManagerID(arr[1]);
+		udpMsg.setFrontEndPort(-1);
+
 		return send(udpMsg);
 	}
 
@@ -61,17 +61,16 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	public String getBookedFlightCount(String recordType) {
 		// TODO Auto-generated method stub
 		System.out.println("inside getBookedFlightCount");
-		//String msg = "getBookedFlightCount:" + recordType;
+		// String msg = "getBookedFlightCount:" + recordType;
 		String[] arr = recordType.split(":");
-		
+
 		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
 				Enums.Operations.getBookedFlightCount, Enums.UDPMessageType.Request);
 		HashMap<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("recordType", arr[2]);
-		udpMsg.setParamters(parameterMap);		
-		udpMsg.setManagerID(arr[1]);		
+		udpMsg.setParamters(parameterMap);
+		udpMsg.setManagerID(arr[1]);
 		udpMsg.setFrontEndPort(-1);
-		
 
 		return send(udpMsg);
 	}
@@ -81,17 +80,18 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		// TODO Auto-generated method stub
 		System.out.println("inside editFlightRecord");
 
-		//String msg = "editFlightRecord:" + recordID + ":" + fieldName + ":" + newValue;
+		// String msg = "editFlightRecord:" + recordID + ":" + fieldName + ":" +
+		// newValue;
 		String[] arr = recordID.split(":");
-		
+
 		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
 				Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
 		HashMap<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("recordID", arr[2]);
 		parameterMap.put("fieldName", fieldName);
 		parameterMap.put("newValue", newValue);
-		udpMsg.setParamters(parameterMap);		
-		udpMsg.setManagerID(arr[1]);		
+		udpMsg.setParamters(parameterMap);
+		udpMsg.setManagerID(arr[1]);
 		udpMsg.setFrontEndPort(-1);
 
 		return send(udpMsg);
@@ -102,7 +102,8 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		// TODO Auto-generated method stub
 		System.out.println("inside transferReservation");
 
-		//String msg = "transferReservation:" + passengerID + ":" + currentCity + ":" + otherCity;
+		// String msg = "transferReservation:" + passengerID + ":" + currentCity
+		// + ":" + otherCity;
 		String[] arr = passengerID.split(":");
 		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
 				Enums.Operations.transferReservation, Enums.UDPMessageType.Request);
@@ -110,11 +111,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		parameterMap.put("passengerID", arr[2]);
 		parameterMap.put("currentCity", currentCity);
 		parameterMap.put("otherCity", otherCity);
-		udpMsg.setParamters(parameterMap);		
-		udpMsg.setManagerID(arr[1]);		
+		udpMsg.setParamters(parameterMap);
+		udpMsg.setManagerID(arr[1]);
 		udpMsg.setFrontEndPort(-1);
-		
-		
+
 		return send(udpMsg);
 	}
 
@@ -135,109 +135,116 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	}
 
 	public String send(UDPMessage new_msg) {
-				
+
 		String result = "0";
 		final String[][] resultInfo = new String[4][4];
 		System.out.println("a");
 		final DatagramSocket socket;
 		try {
 			socket = new DatagramSocket();
-		
-			
-		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, false, socket);
 
-		new_msg.setFrontEndPort(socket.getLocalPort());
-		
-		Boolean status = s.send(new_msg);
-		
-		System.out.println(status);
-		
-		
-/*		while(true){
+			Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT,
+					StaticContent.FRONT_END_ACK_PORT, false, socket);
 
-			Reciever r = new Reciever(a, StaticContent.FRONT_END_ACK_PORT);
+			new_msg.setFrontEndPort(socket.getLocalPort());
 
-			System.out.println("the data received is : "
-					+ r.getData().getServerName());
-			
-			System.out.println("the data received is : "
-					+ r.getData().getSender());
-		}
-*/		
-				
-		Thread t2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int i = 0;
-				boolean isWaiting2 = true;
-				while (isWaiting2) {
-					try {
-						
-						System.out.println("waiting for UDP message i: " + i);
-						byte[] buffer2 = new byte[1000];
-						DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
-						socket.receive(requestPacket2);
-						
-						
-						String message = new String(requestPacket2.getData());
-						System.out.println("Result message received: " + message + " address: "
-								+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
-						resultInfo[i][0] = "0";
-						resultInfo[i][1] = message;
-						resultInfo[i][2] = requestPacket2.getAddress().toString();
-						resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+			Boolean status = s.send(new_msg);
 
-						i++;
+			System.out.println(status);
 
-						if (i == 4) {
-							isWaiting2 = false;
-							System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
-							break;
+			/*
+			 * while(true){
+			 * 
+			 * Reciever r = new Reciever(a, StaticContent.FRONT_END_ACK_PORT);
+			 * 
+			 * System.out.println("the data received is : " +
+			 * r.getData().getServerName());
+			 * 
+			 * System.out.println("the data received is : " +
+			 * r.getData().getSender()); }
+			 */
+
+			Thread t2 = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					int i = 0;
+					boolean isWaiting2 = true;
+					while (isWaiting2) {
+						try {
+
+							System.out.println("waiting for UDP message i: " + i);
+							byte[] buffer2 = new byte[1000];
+							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
+							socket.receive(requestPacket2);
+
+							String message = new String(requestPacket2.getData());
+							System.out.println("Result message received: " + message + " address: "
+									+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
+							resultInfo[i][0] = "0";
+							resultInfo[i][1] = message;
+							resultInfo[i][2] = requestPacket2.getAddress().toString();
+							resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+
+							i++;
+
+							if (i == 4) {
+								isWaiting2 = false;
+								System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
+								break;
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
-			}
-		});
-		t2.start();
+			});
+			t2.start();
+			// t2.join();
 
-		Timer timer = new Timer();
-		TimeOutTask timeOutTask = null;
-		boolean isWaiting = true;
+			Timer timer = new Timer();
+			TimeOutTask timeOutTask = null;
+			boolean isWaiting = true;
 
-		timer.schedule(timeOutTask = new TimeOutTask(), 5000);
+			timer.schedule(timeOutTask = new TimeOutTask(), StaticContent.FRONT_END_SERVER_REPLY_TIME_OUT);
 
-		int count = 0;
-		while (isWaiting) {
-			count++;
-			System.out.print(count +" ");
-			if(count%20==0){
-				System.out.println();
-			}
-			
-			if (timeOutTask.getTimeOut() || !t2.isAlive()) {
-				isWaiting = false;
-				t2.stop();
-				System.out.println("time out has occured:");
-				for (int k = 0; k < 4; k++) {
-					if (resultInfo[k][1] == null) {
-						resultInfo[k][0] = "0";
-						resultInfo[k][1] = "X";
-						resultInfo[k][2] = "X";
-						resultInfo[k][3] = "X";
-					}
-					System.out.println("resultInfo[" + k + "][0] = " + resultInfo[k][0]);
-					System.out.println("resultInfo[" + k + "][1] = " + resultInfo[k][1]);
-					System.out.println("resultInfo[" + k + "][2] = " + resultInfo[k][2]);
-					System.out.println("resultInfo[" + k + "][3] = " + resultInfo[k][3]);
+			int count = 0;
+			while (isWaiting) {
+				count++;
+				System.out.print(count + " ");
+				if (count % 20 == 0) {
+					System.out.println();
 				}
-			}
 
-		}
-		socket.close();
-		
+				if (timeOutTask.getTimeOut() || !t2.isAlive()) {
+					isWaiting = false;
+					t2.stop();
+
+					if (timeOutTask.getTimeOut()) {
+						System.out.println("time out has occured:");
+					}
+					else if(!t2.isAlive())
+					{
+						System.out.println("All Messages arrived.");
+					}
+
+					for (int k = 0; k < 4; k++) {
+						if (resultInfo[k][1] == null) {
+							resultInfo[k][0] = "0";
+							resultInfo[k][1] = "X";
+							resultInfo[k][2] = "X";
+							resultInfo[k][3] = "X";
+						}
+						System.out.println("resultInfo[" + k + "][0] = " + resultInfo[k][0]);
+						System.out.println("resultInfo[" + k + "][1] = " + resultInfo[k][1]);
+						System.out.println("resultInfo[" + k + "][2] = " + resultInfo[k][2]);
+						System.out.println("resultInfo[" + k + "][3] = " + resultInfo[k][3]);
+					}
+				}
+
+			}
+			socket.close();
+
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -250,9 +257,11 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	}
 
 	/**
-	 * This method compares 4 results that was sent by replicas
-	 * to verify the correct one even if one is incorrect and another is lost.
-	 * @param new_resultInfo information of replicas
+	 * This method compares 4 results that was sent by replicas to verify the
+	 * correct one even if one is incorrect and another is lost.
+	 * 
+	 * @param new_resultInfo
+	 *            information of replicas
 	 * @return correct result
 	 */
 	public String compareResults(String[][] new_resultInfo) {
