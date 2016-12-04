@@ -22,7 +22,10 @@ public class Adding {
 	public static void main(String[] args) throws InterruptedException, SocketException {
 //		// String msg = "Hello ; ";
 //
+		DatagramSocket socket1 = new DatagramSocket();
+		System.out.println("bbb="+socket1.getLocalPort());
 //		// Fornt End Send Request
+		
 		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.FlightCities.Montreal,
 				Enums.Operations.bookFlight, Enums.UDPMessageType.Request);
 		HashMap<String, String> parameterMap = new HashMap<String, String>();
@@ -34,18 +37,50 @@ public class Adding {
 		parameterMap.put("date", "2016/12/1");
 		parameterMap.put("classFlight", Enums.Class.Economy.toString());
 		udpMsg.setParamters(parameterMap);
+		udpMsg.setFrontEndPort(socket1.getLocalPort());
 
-		Sender s = new Sender("127.0.0.2", 10091, 2000, false, new DatagramSocket());
+		
+		//Sender s = new Sender("127.0.0.2", 10091, 2000, false, new DatagramSocket());
+		Sender s = new Sender("127.0.0.1", 10091, false, socket1);
 		Boolean status = s.send(udpMsg);
 		System.err.println("isTransferComplete : " + s.isTransferComplete);
 		System.err.println("status : " + status);
 
-		DatagramSocket socket = s.getOutGoingSocket();
+		
+		//DatagramSocket scoket = new DatagramSocket(10091);
+		boolean isrun = true;
+	//	while (isrun) {
+			// Reciever r = new Reciever(10091,2000);
 
-		// do FE staff here etc etc
-		System.out.println("Get Port # used : " + socket.getLocalPort());
-
-		socket.close();
+			Reciever r = new Reciever(socket1);
+			udpMsg = r.getData();
+			// Thread.sleep(1000);
+			// System.err.println("isTransferComplete : "+
+			// s.isTransferComplete);
+			System.out.println("the data received is : ");
+			System.out.println("sender: " + r.getData().getSender());
+			System.out.println("front end ip: " + r.getData().getFrontEndIP());
+			System.out.println("front end port: " + r.getData().getFrontEndPort());
+			System.out.println("server name: " + r.getData().getServerName());
+			System.out.println("manager id: " + r.getData().getManagerID());
+			System.out.println("sequence number: " + r.getData().getSequencerNumber());
+			System.out.println("operation: " + r.getData().getOpernation());
+			System.out.println("reply message: " + r.getData().getReplyMsg());
+			System.out.println("message parameters: " + r.getData().getParamters());
+			
+		
+			
+		//	 socket1.close();
+	//	}
+		socket1.close();
+		
+		
+//		DatagramSocket socket = s.getOutGoingSocket();
+//
+//		// do FE staff here etc etc
+//		System.out.println("Get Port # used : " + socket.getLocalPort());
+//
+//		socket.close();
 
 		// System.err.println("isTransferComplete : "+ s.isTransferComplete);
 		// Reciever r = new Reciever(1000,2000);

@@ -8,6 +8,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import FE.TimeOutTask;
+import ReliableUDP.Reciever;
+import StaticContent.StaticContent;
 
 public class TempSequencerAnd4Servers {
 	
@@ -17,7 +19,7 @@ public class TempSequencerAnd4Servers {
 	public static void main(String[] args){
 		
 		
-		int port = 5555;
+		int port = StaticContent.SEQUENCER_lISTENING_PORT;
 		DatagramSocket socket;
 		try {
 			socket = new DatagramSocket(port);
@@ -28,24 +30,22 @@ public class TempSequencerAnd4Servers {
 		
 		while(isWaiting){
 			
-			try {
-				byte[] buffer2 = new byte[1000];
-				DatagramPacket requestPacket = new DatagramPacket(buffer2, buffer2.length);
-				socket.receive(requestPacket); 
-				String message = new String(requestPacket.getData());				
-				System.out.println("Message received: "+message+" address: "+requestPacket.getAddress()+" portNumber: "+requestPacket.getPort());
-				addressFE = requestPacket.getAddress().toString();
-				portFE = requestPacket.getPort();
+		//	try {
+				Reciever r = new Reciever(socket);
+				
+				
+				
+				InetAddress aHost = r.getData().getFrontEndIP();
+				portFE = r.getData().getFrontEndPort();
 							
-				String msgACK = "Ack:0";
-				DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), requestPacket.getAddress(), requestPacket.getPort());
-				socket.send(replyPacket2);
-				System.out.println("Acknowledgement sent to "+requestPacket.getAddress()+" "+requestPacket.getPort());
+			//	String msgACK = "Ack:0";
+			//	DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(), aHost, portFE);
+			//	socket.send(replyPacket2);
 				isWaiting = false;
-			} catch (IOException e) {
+		//	} catch (IOException e) {
 				//TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	//			e.printStackTrace();
+	//		}
 		}
 		
 		socket.close();
@@ -57,10 +57,10 @@ public class TempSequencerAnd4Servers {
 		
 		
 		
-		send("Sajjad");
-		send("Ulan");
-		send("Ulan");
-	//	send("Ulan");
+		send("true:Sajjad");
+		send("true:Ulan");
+		send("true:Ulan");
+		send("true:Ulan");
 		
 		
 		
@@ -82,10 +82,10 @@ public class TempSequencerAnd4Servers {
 		socket.send(requestPacket);
 		System.out.println("Request sent to FE: " + new String(requestPacket.getData()));
 		
-		byte[] buffer1 = new byte[1000];
-		DatagramPacket replyPacket = new DatagramPacket(buffer1, buffer1.length);	
-		socket.receive(replyPacket);
-		System.out.println("Reply Ack received from FE: " + new String(replyPacket.getData()));	
+	//	byte[] buffer1 = new byte[1000];
+	//	DatagramPacket replyPacket = new DatagramPacket(buffer1, buffer1.length);	
+	//	socket.receive(replyPacket);
+	//	System.out.println("Reply Ack received from FE: " + new String(replyPacket.getData()));	
 		
 		
 		

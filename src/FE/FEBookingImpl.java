@@ -177,34 +177,15 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					boolean isWaiting2 = true;
 					while (isWaiting2) {
 						try {
-
 							System.out.println("waiting for UDP message i: " + i);
-//
-//							System.out.println("XXXXXXXXX=" + socket.getLocalPort());
-//							System.out.println("XXXXXXXXX=" + socket.isClosed());
-//							// DatagramSocket socket = new DatagramSocket(a);
+							
 
-							// if(!socket.isClosed()){
-							// a = socket.getLocalPort();
-							// }
-							// socket.close();
-							// socket = new DatagramSocket(a);
-//							System.out.println("Socket status : " + socket.isClosed());
-//							System.out.println("my port: " + socket.getLocalPort());
 
 							// Reciever r = new Reciever(socket);
 							
+						//		byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 							
-							
-					//		byte[] buffer2 = new byte[1000];
-					//		DatagramPacket requestPacket = new DatagramPacket(buffer2, buffer2.length);
-					//		socket.receive(requestPacket); 
-							
-
-					//		byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-					//		byte[] receiveData = new byte[1000];
-							
-					// receivePacket = new DatagramPacket(receiveData, receiveData.length);
+							// receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					//		socket.receive(receivePacket);
 
 				//			byte[] message2 = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
@@ -218,59 +199,28 @@ public class FEBookingImpl extends FEBookingIntPOA {
 						//	String message =new String(receivePacket.getData());
 							
 							
-//							byte[] buffer2 = new byte[1000];
-//							DatagramPacket requestPacket = new DatagramPacket(buffer2, buffer2.length);
-//							socket.receive(requestPacket); 
-//							String message = new String(requestPacket.getData());
 //							
-//							System.out.println(message);
-//							message = requestPacket.getData().toString();
-//							System.out.println(message);
-//							
-//							String[] arr = message.split(":");
-
-							// byte[] buffer2 = new byte[1000];
-							// DatagramPacket requestPacket2 = new
-							// DatagramPacket(buffer2, buffer2.length);
-							// socket.receive(requestPacket2);
-
-							// String message = new
-							// String(requestPacket2.getData());
-							// System.out.println("Result message received: " +
-							// message + " address: "
-							// + requestPacket2.getAddress() + " portNumber: " +
-							// requestPacket2.getPort());
-//							resultInfo[i][0] = arr[0];
-//							resultInfo[i][1] = arr[1];
-//							resultInfo[i][2] = requestPacket.getAddress().toString();
-//							resultInfo[i][3] = Integer.toString(requestPacket.getPort());
-
-							// resultInfo[i][2] =
-							// requestPacket2.getAddress().toString();
-							// resultInfo[i][3] =
-							// Integer.toString(requestPacket2.getPort());
-						//	receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+//							String[] arr = message.split(":");							
 							
-							
-							System.out.println("waiting for UDP message i: " + i);
 							byte[] buffer2 = new byte[1000];
 							DatagramPacket requestPacket2 = new DatagramPacket(buffer2, buffer2.length);
 							socket.receive(requestPacket2);
 							
+							if(requestPacket2.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
 							
-							String message = new String(requestPacket2.getData());
-							System.out.println("Result message received: " + message + " address: "
-									+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
-							resultInfo[i][0] = "0";
-							resultInfo[i][1] = message;
-							resultInfo[i][2] = requestPacket2.getAddress().toString();
-							resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
-							i++;
+								String message = new String(requestPacket2.getData());
+								System.out.println("Result message received: " + message + " address: "+ requestPacket2.getAddress() + " portNumber: " + requestPacket2.getPort());
+								resultInfo[i][0] = "0";
+								resultInfo[i][1] = message;
+								resultInfo[i][2] = requestPacket2.getAddress().toString();
+								resultInfo[i][3] = Integer.toString(requestPacket2.getPort());
+								i++;
 
-							if (i == 4) {
-								isWaiting2 = false;
-								System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
-								break;
+								if (i == 4) {
+									isWaiting2 = false;
+									System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
+									break;
+								}
 							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block

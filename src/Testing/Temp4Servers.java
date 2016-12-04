@@ -106,8 +106,10 @@ public class Temp4Servers {
 		//			DatagramSocket s = new DatagramSocket(portFE);
 					DatagramSocket socket = new DatagramSocket();
 					System.out.println("my socket is : "+ socket.getLocalPort());
+					String msg = "true:"+new_ans;
+					System.out.println("THE WORD: "+msg);
 					//new_ans ="true:"+new_ans;
-					DatagramPacket requestPacket1 = new DatagramPacket(new_ans.getBytes(), new_ans.length(), aHostFE, portFE);
+					DatagramPacket requestPacket1 = new DatagramPacket(msg.getBytes(), msg.length(), aHostFE, portFE);
 					socket.send(requestPacket1);
 					
 			//		Sender s = new Sender(StaticContent.FRONT_END_IP_ADDRESS, portFE, 19091, true, new DatagramSocket());

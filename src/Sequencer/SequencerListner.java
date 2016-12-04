@@ -26,14 +26,17 @@ public class SequencerListner implements Runnable {
 
 	@Override
 	public void run() {
+		DatagramSocket scoket = null;
 		try {
 			//serverSocket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
-			byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+			//byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			//byte[] sendData = new byte[SIZE_BUFFER_REQUEST];
 			String msg = Enums.UDPSender.Sequencer.toString() + " UDP Server Is UP!";
 
 			System.out.println(msg);
 			clogger.log(msg);
+			scoket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
+			boolean isrun = true;
 			while (continueUDP) {
 
 //				// Read request
@@ -45,10 +48,11 @@ public class SequencerListner implements Runnable {
 //				// Clear received buffer
 //				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 				
-				Reciever r = new Reciever(StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT);
+				Reciever r = new Reciever(scoket);
 				UDPMessage udpMessage =  r.getData();
 				//System.out.println("data recieved is : "+ r.getData().getSequencerNumber());				
-				
+				if(udpMessage!= null)
+				{
 				switch (udpMessage.getSender()) {
 				case FrontEnd:
 					increaseSequenceNumber();
@@ -78,6 +82,11 @@ public class SequencerListner implements Runnable {
 				default:
 					break;
 				}
+				}
+				else
+				{
+					System.out.println("NLL");
+				}
 				
 //				//Send Acknowledge.
 //				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
@@ -89,9 +98,11 @@ public class SequencerListner implements Runnable {
 //				// Clear Send buffer
 //				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			}
+			scoket.close();
 		} catch (Exception ex) {
 			clogger.logException("on starting UDP Server", ex);
 			ex.printStackTrace();
+			scoket.close();
 		}
 
 	}
