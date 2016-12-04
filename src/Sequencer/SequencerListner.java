@@ -27,7 +27,7 @@ public class SequencerListner implements Runnable {
 	@Override
 	public void run() {
 		try {
-			serverSocket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
+			//serverSocket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
 			byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			//byte[] sendData = new byte[SIZE_BUFFER_REQUEST];
 			String msg = Enums.UDPSender.Sequencer.toString() + " UDP Server Is UP!";

@@ -17,8 +17,11 @@ public class StaticContent {
 	public static final boolean Save_TO_FILES = false;
 	
 	public static final int UDP_REQUEST_BUFFER_SIZE = 4000;
-	public static final int UDP_RECEIVE_TIMEOUT = 3000;
-
+	public static final int UDP_RECEIVE_TIMEOUT = 300;
+	
+	public static final int FRONT_END_SERVER_REPLY_TIME_OUT = 3000;
+	
+	
 	// Error Messages
 	public static final String MSG_NUMBER = "Enter a number[0-9].";
 	public static final String MSG_PHONE = "Enter a valid Phone # (10 digit, 5141231238).";

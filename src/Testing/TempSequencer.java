@@ -32,13 +32,13 @@ public class TempSequencer {
 		//	r.getData().setFrontEndPort(frontEndPort)
 
 			try {
-			sendDoc(r.getData(), StaticContent.REPLICA_ULAN_IP_ADDRESS, StaticContent.REPLICA_ULAN_lISTENING_PORT);
+			sendDoc(r.getData(), StaticContent.REPLICA_ULAN_IP_ADDRESS, StaticContent.REPLICA_ULAN_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_ULAN);
 			
-			sendDoc(r.getData(), StaticContent.REPLICA_SAJJAD_IP_ADDRESS, StaticContent.REPLICA_SAJJAD_lISTENING_PORT);
+			sendDoc(r.getData(), StaticContent.REPLICA_SAJJAD_IP_ADDRESS, StaticContent.REPLICA_SAJJAD_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD);
 			
-			sendDoc(r.getData(), StaticContent.REPLICA_UMER_IP_ADDRESS, StaticContent.REPLICA_UMER_lISTENING_PORT);
+			sendDoc(r.getData(), StaticContent.REPLICA_UMER_IP_ADDRESS, StaticContent.REPLICA_UMER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER);
 			
-			sendDoc(r.getData(), StaticContent.REPLICA_FERAS_IP_ADDRESS, StaticContent.REPLICA_FERAS_lISTENING_PORT);
+			sendDoc(r.getData(), StaticContent.REPLICA_FERAS_IP_ADDRESS, StaticContent.REPLICA_FERAS_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS);
 			
 			} catch (SocketException e) {
 				// TODO Auto-generated catch block
@@ -49,9 +49,9 @@ public class TempSequencer {
 	}
 	
 	
-	public static void sendDoc(UDPMessage udpMsg, String aHost, int aPort) throws SocketException{
+	public static void sendDoc(UDPMessage udpMsg, String aHost, int aPort, int ackPort) throws SocketException{
 					
-			Sender s = new Sender(aHost, aPort, StaticContent.SEQUENCER_ACK_PORT, false, new DatagramSocket());
+			Sender s = new Sender(aHost, aPort, ackPort, false, new DatagramSocket());
 			
 			s.send(udpMsg);
 			
