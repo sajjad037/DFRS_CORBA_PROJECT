@@ -145,45 +145,12 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		
 			
 		Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, StaticContent.FRONT_END_ACK_PORT, false, socket);
-		System.out.println("b");
-		System.out.println("c");
-//	final DatagramSocket socket = new DatagramSocket();			
-		System.out.println("abc port: " + socket.getLocalPort());
-		System.out.println("d");
+
 		new_msg.setFrontEndPort(socket.getLocalPort());
 		
 		Boolean status = s.send(new_msg);
-		System.out.println("e");
-		System.out.println("status : " + status);
-		System.out.println("f");
-		System.out.println("socket isclosed? : "+ socket.isClosed());
-		System.out.println("abc port: " + socket.getLocalPort());
-		System.out.println("g");
-	//	int a = socket.getLocalPort();
 		
-	//	socket.close();
-	//	System.out.println("ff");
-	//	System.out.println("socket isclosed? : "+ socket.isClosed());
-	//	System.out.println("abc port: " + socket.getLocalPort());
-	//	System.out.println("gg");
-		
-		
-		
-		
-		
-//			InetAddress aHost = InetAddress.getByName(addressSequencer);
-
-//			DatagramPacket requestPacket1 = new DatagramPacket(new_msg.getBytes(), new_msg.length(), aHost,
-//					portSequencer);
-//			socket.send(requestPacket1);
-//			System.out.println("Request sent to Sequencer: " + new String(requestPacket1.getData()));
-
-//			byte[] buffer1 = new byte[1000];
-//			DatagramPacket replyPacket1 = new DatagramPacket(buffer1, buffer1.length);
-//			socket.receive(replyPacket1);
-//			System.out.println("Reply Ack received from Sequencer: " + new String(replyPacket1.getData()));
-
-//		System.exit(0);
+		System.out.println(status);
 		
 		
 /*		while(true){
@@ -197,7 +164,6 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					+ r.getData().getSender());
 		}
 */		
-	//	final DatagramSocket socket2 = new DatagramSocket(a);
 				
 		Thread t2 = new Thread(new Runnable() {
 			@Override
@@ -206,9 +172,6 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				boolean isWaiting2 = true;
 				while (isWaiting2) {
 					try {
-						System.out.println("h");
-						System.out.println("socket isclosed? : "+ socket.isClosed());
-						System.out.println("i");
 						
 						System.out.println("waiting for UDP message i: " + i);
 						byte[] buffer2 = new byte[1000];
@@ -226,16 +189,10 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 						i++;
 
-				//		String msgACK = "Ack:0";
-				//		DatagramPacket replyPacket2 = new DatagramPacket(msgACK.getBytes(), msgACK.length(),
-				//				requestPacket2.getAddress(), requestPacket2.getPort());
-				//		socket.send(replyPacket2);
-				//		System.out.println("Acknowledgement sent to " + requestPacket2.getAddress() + " "
-				//				+ requestPacket2.getPort());
-
 						if (i == 4) {
 							isWaiting2 = false;
 							System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
+							break;
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -252,9 +209,15 @@ public class FEBookingImpl extends FEBookingIntPOA {
 
 		timer.schedule(timeOutTask = new TimeOutTask(), 5000);
 
+		int count = 0;
 		while (isWaiting) {
-			System.out.println("run");
-			if (timeOutTask.getTimeOut()) {
+			count++;
+			System.out.print(count +" ");
+			if(count%20==0){
+				System.out.println();
+			}
+			
+			if (timeOutTask.getTimeOut() || !t2.isAlive()) {
 				isWaiting = false;
 				t2.stop();
 				System.out.println("time out has occured:");
