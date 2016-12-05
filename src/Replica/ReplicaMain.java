@@ -3,19 +3,24 @@ package Replica;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.DatagramSocket;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Timer;
 import java.util.logging.Logger;
 
 import Models.Enums;
 import Models.UDPMessage;
-import Server.FlightServer;
+import ReliableUDP.Reciever;
+import ReliableUDP.Sender;
+import ReplicaManager.RMHeartBeat;
+import ReplicaManager.ReplicaManagerListner;
+
 import StaticContent.StaticContent;
 import Utilities.CLogger;
-
-//FLIGHTSERVER is my Server Implementation class of CORBA.
-//CHANGE IT AS PER YOUR CLASS.
 
 public class ReplicaMain {
 	private static CLogger clogger;
@@ -61,6 +66,15 @@ public class ReplicaMain {
 
 		} catch (Exception e) {
 			System.out.println("Sequencer Exception: " + e.getMessage());
+		}
+	}
+	
+	public void shutDownReplica()
+	{
+		for(Entry<String, FlightServer> entry : servers.entrySet())
+		{
+			FlightServer temp = entry.getValue();
+			temp.shutDownServer();
 		}
 	}
 

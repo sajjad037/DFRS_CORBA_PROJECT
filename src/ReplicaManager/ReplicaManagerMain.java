@@ -54,6 +54,7 @@ public class ReplicaManagerMain {
 
 	public static void restartReplica() {
 		if (isReplicaAlive == false) {
+			myReplicaInstance.shutDownReplica();
 			myReplicaInstance = null;
 			myReplicaInstance = new ReplicaMain(true);
 		}
