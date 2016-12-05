@@ -280,27 +280,52 @@ public class FEBookingImpl extends FEBookingIntPOA {
 		addressPortRM[2] = StaticContent.RM3_IP_ADDRESS+":"+Integer.toString(StaticContent.RM3_lISTENING_PORT);
 		addressPortRM[3] = StaticContent.RM4_IP_ADDRESS+":"+Integer.toString(StaticContent.RM4_lISTENING_PORT);
 		
+		UDPMessage udpMsg2Rm = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.FlightCities.Montreal, Enums.Operations.softwareFailure, Enums.UDPMessageType.Request);
+		
+		
 		for(int k=0; k<4; k++){
 			String msgRM = "none";
 			if(!resultInfo[k][1].trim().equalsIgnoreCase(result)){
 				System.err.println("right here: "+resultInfo[k][1]);
 				if(!resultInfo[k][1].equalsIgnoreCase("X")){
-					msgRM = "notcorrect:"+resultInfo[k][2]+":"+resultInfo[k][3];
+					//msgRM = "notcorrect:"+resultInfo[k][2]+":"+resultInfo[k][3];
+					udpMsg2Rm.setOpernation(Enums.Operations.softwareFailure);
 				}else{
-					msgRM = "noresultsent:"+resultInfo[k][2]+":"+resultInfo[k][3];
+					//msgRM = "noresultsent:"+resultInfo[k][2]+":"+resultInfo[k][3];
+					udpMsg2Rm.setOpernation(Enums.Operations.hardwareFailure);
 				}
 				for(int j=0; j<4; j++){
 					String[] arr = addressPortRM[j].split(":");
 					InetAddress aHostRM = InetAddress.getByName(arr[0]);
 					int portN = Integer.parseInt(arr[1]);
-					DatagramPacket packetToRM = new DatagramPacket(msgRM.getBytes(), msgRM.length(), aHostRM, portN);
-					socket.send(packetToRM);
-					System.out.println("Packet sent to RM"+j+": "+ new String(packetToRM.getData()));
 					
-					byte[] buffer2 = new byte[1000];
-					DatagramPacket replyPacket = new DatagramPacket(buffer2, buffer2.length);	
-					socket.receive(replyPacket);
-					System.out.println("Ack received from RM"+j+": " + new String(replyPacket.getData()));	
+					udpMsg2Rm.setFrontEndIP(InetAddress.getByName(resultInfo[k][2]));
+					udpMsg2Rm.setFrontEndPort(Integer.parseInt(resultInfo[k][2]));
+					
+					byte[] sendData2 = Serializer.serialize(udpMsg2Rm);
+					DatagramPacket sendPacket2 = new DatagramPacket(sendData2, sendData2.length, aHostRM, portN);
+					socket.send(sendPacket2);
+					
+				//	DatagramPacket packetToRM = new DatagramPacket(msgRM.getBytes(), msgRM.length(), aHostRM, portN);
+				//	socket.send(packetToRM);
+					//System.out.println("Packet sent to RM"+j+": "+ new String(packetToRM.getData()));
+					
+			//		byte[] buffer2 = new byte[1000];
+			//		DatagramPacket replyPacket = new DatagramPacket(buffer2, buffer2.length);	
+			//		socket.receive(replyPacket);
+			//		System.out.println("Ack received from RM"+j+": " + new String(replyPacket.getData()));	
+					
+					
+					byte[] receiveData2 = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					DatagramPacket receivePacket2 = new DatagramPacket(receiveData2, receiveData2.length);			
+					socket.receive(receivePacket);
+					
+					byte[] message2 = Arrays.copyOf(receivePacket2.getData(), receivePacket2.getLength());
+					//Deserialize Data to udpMessage Object.
+					UDPMessage udpMessageReceived2 = Serializer.deserialize(message2);					
+					receiveData2 = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					
+					System.out.println(udpMessageReceived2.getReplyMsg());
 					
 				}									
 			}	
