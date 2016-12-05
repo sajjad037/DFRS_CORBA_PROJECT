@@ -260,15 +260,54 @@ public class FEBookingImpl extends FEBookingIntPOA {
 				}
 
 			}
-			// socket.close();
+		
+		result = compareResults(resultInfo).trim();
+		System.out.println("final result: "+result);
+	
+		String[] addressPortRM = new String[4];
+		addressPortRM[0] = StaticContent.RM1_IP_ADDRESS+":"+Integer.toString(StaticContent.RM1_lISTENING_PORT);
+		addressPortRM[1] = StaticContent.RM2_IP_ADDRESS+":"+Integer.toString(StaticContent.RM2_lISTENING_PORT);
+		addressPortRM[2] = StaticContent.RM3_IP_ADDRESS+":"+Integer.toString(StaticContent.RM3_lISTENING_PORT);
+		addressPortRM[3] = StaticContent.RM4_IP_ADDRESS+":"+Integer.toString(StaticContent.RM4_lISTENING_PORT);
+		
+		for(int k=0; k<4; k++){
+			String msgRM = "none";
+			if(!resultInfo[k][1].trim().equalsIgnoreCase(result)){
+				System.err.println("right here: "+resultInfo[k][1]);
+				if(!resultInfo[k][1].equalsIgnoreCase("X")){
+					msgRM = "notcorrect:"+resultInfo[k][2]+":"+resultInfo[k][3];
+				}else{
+					msgRM = "noresultsent:"+resultInfo[k][2]+":"+resultInfo[k][3];
+				}
+				for(int j=0; j<4; j++){
+					String[] arr = addressPortRM[j].split(":");
+					InetAddress aHostRM = InetAddress.getByName(arr[0]);
+					int portN = Integer.parseInt(arr[1]);
+					DatagramPacket packetToRM = new DatagramPacket(msgRM.getBytes(), msgRM.length(), aHostRM, portN);
+					socket.send(packetToRM);
+					System.out.println("Packet sent to RM"+j+": "+ new String(packetToRM.getData()));
+					
+					byte[] buffer2 = new byte[1000];
+					DatagramPacket replyPacket = new DatagramPacket(buffer2, buffer2.length);	
+					socket.receive(replyPacket);
+					System.out.println("Ack received from RM"+j+": " + new String(replyPacket.getData()));	
+					
+				}									
+			}	
+		}
+		
+		socket.close();
 
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-
-		result = compareResults(resultInfo);
-		System.out.println("final result: " + result);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 
 		return result;
 	}
