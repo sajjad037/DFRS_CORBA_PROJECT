@@ -15,6 +15,7 @@ import org.omg.CORBA.ORB;
 
 import Models.Enums;
 import Models.UDPMessage;
+import RUDP.RUDP;
 import ReliableUDP.Reciever;
 import ReliableUDP.Sender;
 import StaticContent.StaticContent;
@@ -148,32 +149,44 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			// Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS,
 			// StaticContent.SEQUENCER_lISTENING_PORT,
 			// StaticContent.FRONT_END_ACK_PORT, false, socket);
-			System.out.println("my socket port :" + socket.getLocalPort());
+			System.out.println("my socket port :" + socket.getLocalPort());			
 
-			Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, false,
-					socket);
+		//	Sender s = new Sender(StaticContent.SEQUENCER_IP_ADDRESS, StaticContent.SEQUENCER_lISTENING_PORT, false, socket);
 
 			new_msg.setFrontEndPort(socket.getLocalPort());
-			try {
-				new_msg.setFrontEndIP(InetAddress.getByName(StaticContent.FRONT_END_IP_ADDRESS));
-			} catch (UnknownHostException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			new_msg.setFrontEndIP(InetAddress.getByName(StaticContent.FRONT_END_IP_ADDRESS));
+				
+			InetAddress aHost = InetAddress.getByName(StaticContent.SEQUENCER_IP_ADDRESS);
+			byte[] sendData = Serializer.serialize(new_msg);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, aHost, StaticContent.SEQUENCER_lISTENING_PORT);
+			socket.send(sendPacket);
+			
+			byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			socket.receive(receivePacket);
+			byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+			
+			//Deserialize Data to udpMessage Object.
+			UDPMessage udpMessageReceived = Serializer.deserialize(message);
+			receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+			System.out.println("Ack from Sequencer: "+udpMessageReceived.getReplyMsg());
+			
+			
+		//	System.exit(0);
+			
+		//	Boolean status = s.send(new_msg);
 
-			Boolean status = s.send(new_msg);
+		//	System.out.println(status);
 
-			System.out.println(status);
-
-			final int a = socket.getLocalPort();
-			System.out.println("aa = " + a);
+		//	final int a = socket.getLocalPort();
+		//	System.out.println("aa = " + a);
 			// socket.close();
 
 			Thread t2 = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					int i = 0;
-					int a = 0;
+				//	int a = 0;
 					boolean isWaiting2 = true;
 					while (isWaiting2) {
 						try {
@@ -184,38 +197,43 @@ public class FEBookingImpl extends FEBookingIntPOA {
 //							String message = r.getData().getReplyMsg();
 								
 							byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-									
+							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);			
 							socket.receive(receivePacket);
 							
-					//		byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
-					//		UDPMessage udpMessageReceived = Serializer.deserialize(message);
-							
+							byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+							//Deserialize Data to udpMessage Object.
+							UDPMessage udpMessageReceived = Serializer.deserialize(message);					
 							receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-
 							
-							if(receivePacket.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
-								System.out.println("received:"+new String(receivePacket.getData()));
-								String[] arr = new String(receivePacket.getData()).split(":");
+						//	if(receivePacket.getPort()!=StaticContent.SEQUENCER_lISTENING_PORT){
+						//		System.out.println("received:"+new String(receivePacket.getData()));
+						//		String[] arr = new String(receivePacket.getData()).split(":");
 						
-							//	resultInfo[i][0] = "0";
-								resultInfo[i][0] = arr[0];
-								//resultInfo[i][1] = udpMessageReceived.getReplyMsg();
-								resultInfo[i][1] = arr[1];
+								resultInfo[i][0] = "0";
+							//	resultInfo[i][0] = arr[0];
+								resultInfo[i][1] = udpMessageReceived.getReplyMsg();
+							//	resultInfo[i][1] = arr[1];
 								resultInfo[i][2] = receivePacket.getAddress().toString();
 								resultInfo[i][3] = Integer.toString(receivePacket.getPort());
 								i++;
+								
+								udpMessageReceived.setReplyMsg("ACK");
+								byte[] sendData = Serializer.serialize(udpMessageReceived);
+								DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+								socket.send(sendPacket);
 
 								if (i == 4) {
 									isWaiting2 = false;
 									System.out.println("i = " + i + ", isWaiting2 set to: " + isWaiting2);
 									break;
 								}
-							}
-						} catch (IOException e) {
+							} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						} catch (ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 					}
 				}
 			});
@@ -305,6 +323,9 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
