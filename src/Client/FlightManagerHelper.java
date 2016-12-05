@@ -118,11 +118,11 @@ public class FlightManagerHelper {
 			case 1:
 				bookFlight();
 				break;
-			case 2:
-				getFlightDetails(this.serverName);
-				break;
+//			case 2:
+//				getFlightDetails(this.serverName);
+//				break;
 
-			case 3:
+			case 2:
 				run = false;
 				System.out.println("Closing Moving Back....");
 				break;
@@ -226,16 +226,16 @@ public class FlightManagerHelper {
 				case 5:
 					transferFlight(serverName);
 					break;
+//
+//				case 6:
+//					getFlightDetails(serverName);
+//					break;
+//
+//				case 7:
+//					getBookingDetails();
+//					break;
 
 				case 6:
-					getFlightDetails(serverName);
-					break;
-
-				case 7:
-					getBookingDetails();
-					break;
-
-				case 8:
 					run = false;
 					System.out.println("Closing Moving Back....");
 					break;
@@ -265,9 +265,9 @@ public class FlightManagerHelper {
 		System.out.println("3. Booked Flight Count.");
 		System.out.println("4. Delete Flight.");
 		System.out.println("5. Transfer Flight.");
-		System.out.println("6. View Avaiable Flights.");
-		System.out.println("7. View All Booking.");
-		System.out.println("8. Back");
+//		System.out.println("6. View Avaiable Flights.");
+//		System.out.println("7. View All Booking.");
+		System.out.println("6. Back");
 	}
 
 	/**
@@ -277,8 +277,8 @@ public class FlightManagerHelper {
 		System.out.println("\n**** Flight Manager Client - User ****\n");
 		System.out.println("Please select an option (1-3)");
 		System.out.println("1. Booked Flight.");
-		System.out.println("2. View Avaiable Flights.");
-		System.out.println("3. Back");
+//		System.out.println("2. View Avaiable Flights.");
+		System.out.println("2. Back");
 	}
 
 	/**
@@ -381,17 +381,28 @@ public class FlightManagerHelper {
 			System.out.println("Enter RecordID of flight to update:");
 			recordID = "" + InputValidation.inputInteger(scanner);
 
+			System.out.println(StaticContent.MSG_CITY_NAME.replace("valid City", "Destination"));
+			String destination = InputValidation.inputFullCity(scanner);
+		    
+			System.out.println(StaticContent.MSG_DATE);
+			String date = InputValidation.inputDate(scanner);
+			
+		    System.out.println(StaticContent.MSG_TIME);
+		    String time = InputValidation.inputTime(scanner);			
+		    
+		    
 			System.out.println(
 					"Enter fieldName: \r\n (flightDate, flightTime, destinaition, source, seatsInFirstClass, seatsInBusinessClass, seatsInEconomyClass, createFlight, deleteFlight, flightDetail)");
 			fieldName = "" + InputValidation.inputFieldName(scanner);
 
 			System.out.println("Enter newValue of that Filed:");
 			newValue = "" + InputValidation.inputNewValueOfField(scanner, fieldName);
+			
 
 			clogger.log("editFlightRecord(recordID:" + recordID + ", fieldName:" + fieldName + ", newValue:" + newValue
 					+ ").");
 			
-			recordID = serverName+":"+managerID+":"+recordID; 
+			recordID = serverName+":"+managerID+":"+recordID+":"+destination+":"+date+":"+time; 
 			
 			response = flgOpImp.editFlightRecord(recordID, fieldName, newValue);
 			//response = flgOpImp.editFlightRecord(recordID + ":" + managerID, fieldName, newValue);
@@ -478,10 +489,17 @@ public class FlightManagerHelper {
 			System.out.println("Enter FlightID To Deleted Record:");
 			flightID = InputValidation.inputInteger(scanner);
 			
-			System.out.println(StaticContent.MSG_DATE);
-			date = InputValidation.inputDate(scanner);
+		    System.out.println(StaticContent.MSG_CITY_NAME.replace("valid City", "Destination"));
+			String destination = InputValidation.inputFullCity(scanner);
 
-			String recordID =  serverName+":"+managerID+":"+date;
+		    System.out.println(StaticContent.MSG_DATE);
+			date = InputValidation.inputDate(scanner);
+			
+		    System.out.println(StaticContent.MSG_TIME);
+		    String time = InputValidation.inputTime(scanner);
+
+			//String recordID =  serverName+":"+managerID+":"+date;
+		    String recordID = serverName+":"+managerID+":"+destination+":"+date+":"+time; 
 			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.deleteFlight.toString(),
 					flightID + "");
 

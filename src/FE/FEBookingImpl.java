@@ -82,20 +82,59 @@ public class FEBookingImpl extends FEBookingIntPOA {
 	public String editFlightRecord(String recordID, String fieldName, String newValue) {
 		// TODO Auto-generated method stub
 		System.out.println("inside editFlightRecord");
+		UDPMessage udpMsg = null;
+		
+		if(fieldName.equals("createFlight"))
+		{
+			String[] arr = recordID.split(":");
 
-		// String msg = "editFlightRecord:" + recordID + ":" + fieldName + ":" +
-		// newValue;
-		String[] arr = recordID.split(":");
+			 udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
+					Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
+			HashMap<String, String> parameterMap = new HashMap<String, String>();
+			parameterMap.put("recordID", arr[2]);
+			parameterMap.put("fieldName", fieldName);
+			parameterMap.put("newValue", newValue);
+			udpMsg.setParamters(parameterMap);
+			udpMsg.setManagerID(arr[1]);
+			udpMsg.setFrontEndPort(-1);
+			//udpMsg.setReplyMsg(arr[3]+":"+arr[4]+":"+arr[5]);
+		}
+		else if(fieldName.equals("deleteFlight")){
+			//Delete Flight
+			String[] arr = recordID.split(":");
 
-		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
-				Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
-		HashMap<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("recordID", arr[2]);
-		parameterMap.put("fieldName", fieldName);
-		parameterMap.put("newValue", newValue);
-		udpMsg.setParamters(parameterMap);
-		udpMsg.setManagerID(arr[1]);
-		udpMsg.setFrontEndPort(-1);
+			 udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
+					Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
+			HashMap<String, String> parameterMap = new HashMap<String, String>();
+			parameterMap.put("recordID", arr[3]);
+			parameterMap.put("fieldName", fieldName);
+			parameterMap.put("newValue", newValue);
+			udpMsg.setParamters(parameterMap);
+			udpMsg.setManagerID(arr[1]);
+			udpMsg.setFrontEndPort(-1);
+			udpMsg.setReplyMsg(arr[2]+":"+arr[3]+":"+arr[4]);
+		}
+		else
+		{
+			//Edit Flight
+			// String msg = "editFlightRecord:" + recordID + ":" + fieldName + ":" +
+			// newValue;
+			String[] arr = recordID.split(":");
+
+			 udpMsg = new UDPMessage(Enums.UDPSender.FrontEnd, -1, Enums.getFlightCitiesFromString(arr[0]),
+					Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
+			HashMap<String, String> parameterMap = new HashMap<String, String>();
+			parameterMap.put("recordID", arr[2]);
+			parameterMap.put("fieldName", fieldName);
+			parameterMap.put("newValue", newValue);
+			udpMsg.setParamters(parameterMap);
+			udpMsg.setManagerID(arr[1]);
+			udpMsg.setFrontEndPort(-1);
+			udpMsg.setReplyMsg(arr[3]+":"+arr[4]+":"+arr[5]);
+		}
+		
+		
+		
 
 		return send(udpMsg);
 	}
