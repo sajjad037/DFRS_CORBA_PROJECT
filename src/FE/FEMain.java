@@ -36,7 +36,10 @@ public class FEMain {
 			NameComponent path[] = ncRef.to_name("FRONTEND");
 			ncRef.rebind(path, href);
 			
-			orb.run();
+			while(true)
+			{
+				orb.run();
+			}
 			
 		} catch (NotFound e) {
 			// TODO Auto-generated catch block

@@ -211,6 +211,7 @@ public class SequencerMulticaster {
 
 				} catch (SocketTimeoutException e) {
 					System.out.println("Time Out occor!");
+					reply = false;
 					// resend
 					// socket.send(data);
 					// continue;

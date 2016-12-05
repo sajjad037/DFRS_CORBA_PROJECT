@@ -299,7 +299,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					InetAddress aHostRM = InetAddress.getByName(arr[0]);
 					int portN = Integer.parseInt(arr[1]);
 					
-					udpMsg2Rm.setFrontEndIP(InetAddress.getByName(resultInfo[k][2]));
+					udpMsg2Rm.setFrontEndIP(InetAddress.getByName(resultInfo[k][2].replace("/", "")));
 					udpMsg2Rm.setFrontEndPort(Integer.parseInt(resultInfo[k][2]));
 					
 					byte[] sendData2 = Serializer.serialize(udpMsg2Rm);
