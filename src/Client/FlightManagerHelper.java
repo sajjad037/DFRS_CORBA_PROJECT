@@ -470,14 +470,18 @@ public class FlightManagerHelper {
 	 */
 	private void deleteFlight() {
 		int flightID;
+		String date ="";
 		String response = "";
 
 		try {
 			System.out.println("\n**** Home -> Manager -> Delete Flight ****\n");
 			System.out.println("Enter FlightID To Deleted Record:");
 			flightID = InputValidation.inputInteger(scanner);
+			
+			System.out.println(StaticContent.MSG_DATE);
+			date = InputValidation.inputDate(scanner);
 
-			String recordID =  serverName+":"+managerID+":-1";
+			String recordID =  serverName+":"+managerID+":"+date;
 			response = flgOpImp.editFlightRecord(recordID, Enums.FlightFileds.deleteFlight.toString(),
 					flightID + "");
 
