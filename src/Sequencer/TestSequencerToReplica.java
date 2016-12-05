@@ -17,15 +17,7 @@ public class TestSequencerToReplica {
 	public static void main(String[] args) {
 		
 		System.out.println("Create a Flight");
-		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.Sequencer, 1, Enums.getFlightCitiesFromString("Montreal"),
-				Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
-		HashMap<String, String> parameterMap = new HashMap<String, String>();		
-		parameterMap.put("recordID", "NONE:MTL1113");
-		parameterMap.put("fieldName", "createFlight");
-		parameterMap.put("newValue", "10:10:10:2016/12/20:14;23:Montreal");
-		udpMsg.setManagerID("MTL1113");
-		udpMsg.setParamters(parameterMap);
-		udpMsg.setFrontEndPort(-1);
+		UDPMessage udpMsg =  null;
 		
 //		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.Sequencer, 1, Enums.getFlightCitiesFromString("Montreal"),
 //				Enums.Operations.bookFlight, Enums.UDPMessageType.Request);
@@ -40,6 +32,24 @@ public class TestSequencerToReplica {
 //		udpMsg.setParamters(parameterMap);		
 //		udpMsg.setManagerID("-1");		
 //		udpMsg.setFrontEndPort(1);	
+		
+//		UDPMessage udpMsg = new UDPMessage(Enums.UDPSender.Sequencer, 1, Enums.getFlightCitiesFromString("Montreal"),
+//				Enums.Operations.editFlightRecord, Enums.UDPMessageType.Request);
+//		HashMap<String, String> parameterMap = new HashMap<String, String>();		
+//		parameterMap.put("recordID", "-1");
+//		parameterMap.put("fieldName", "createFlight");
+//		parameterMap.put("newValue", "10:10:10:2016/12/12:12;12:Washington");
+//		udpMsg.setManagerID("MTL1113");
+//		udpMsg.setParamters(parameterMap);
+//		udpMsg.setFrontEndPort(-1);
+		 
+		udpMsg = new UDPMessage(Enums.UDPSender.Sequencer, 1, Enums.getFlightCitiesFromString("Montreal"),
+				Enums.Operations.getBookedFlightCount, Enums.UDPMessageType.Request);
+		HashMap<String, String> parameterMap = new HashMap<String, String>();		
+		parameterMap.put("recordType", "Economy");
+		udpMsg.setManagerID("MTL1113");
+		udpMsg.setParamters(parameterMap);
+		udpMsg.setFrontEndPort(-1);
 		
 		
 		
