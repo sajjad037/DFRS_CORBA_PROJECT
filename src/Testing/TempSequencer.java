@@ -67,9 +67,9 @@ public class TempSequencer {
 						StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER);
 
 				udpMessageReceived.setReplyMsg("Ulan");
-				sendDoc(udpMessageReceived, StaticContent.REPLICA_FERAS_IP_ADDRESS,
-						StaticContent.REPLICA_FERAS_lISTENING_PORT,
-						StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS);
+		//		sendDoc(udpMessageReceived, StaticContent.REPLICA_FERAS_IP_ADDRESS,
+		//				StaticContent.REPLICA_FERAS_lISTENING_PORT,
+		//				StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS);
 
 			}
 			socketReceiver.close();

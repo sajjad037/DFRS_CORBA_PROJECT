@@ -171,30 +171,22 @@ public class FEBookingImpl extends FEBookingIntPOA {
 			receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			System.out.println("Ack from Sequencer: "+udpMessageReceived.getReplyMsg());
 			
-			
-		//	System.exit(0);
-			
+						
 		//	Boolean status = s.send(new_msg);
-
 		//	System.out.println(status);
-
-		//	final int a = socket.getLocalPort();
-		//	System.out.println("aa = " + a);
-			// socket.close();
+		//  socket.close();
 
 			Thread t2 = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					int i = 0;
-				//	int a = 0;
 					boolean isWaiting2 = true;
 					while (isWaiting2) {
 						try {
 							System.out.println("waiting for UDP message i: " + i);
 
 							// Reciever r = new Reciever(socket);
-							
-//							String message = r.getData().getReplyMsg();
+							// String message = r.getData().getReplyMsg();
 								
 							byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 							DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);			
