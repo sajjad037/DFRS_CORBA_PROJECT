@@ -1,5 +1,6 @@
 package Sequencer;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.Arrays;
@@ -28,28 +29,34 @@ public class SequencerListner implements Runnable {
 	public void run() {
 		DatagramSocket scoket = null;
 		try {
-			//serverSocket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
-			//byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-			//byte[] sendData = new byte[SIZE_BUFFER_REQUEST];
+			serverSocket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
+			byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+			byte[] sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			String msg = Enums.UDPSender.Sequencer.toString() + " UDP Server Is UP!";
 
 			System.out.println(msg);
 			clogger.log(msg);
-			scoket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
+			//scoket = new DatagramSocket(StaticContent.SEQUENCER_lISTENING_PORT);
 			boolean isrun = true;
 			while (continueUDP) {
 
-//				// Read request
-//				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-//				serverSocket.receive(receivePacket);
-//				
-//				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
-//		        UDPMessage udpMessage = Serializer.deserialize(message);
-//				// Clear received buffer
-//				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+				// Read request
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				serverSocket.receive(receivePacket);
 				
-				Reciever r = new Reciever(scoket);
-				UDPMessage udpMessage =  r.getData();
+				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+		        UDPMessage udpMessage = Serializer.deserialize(message);
+				// Clear received buffer
+				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+				
+				
+				//Check Sum ...
+				
+				//else Send NAK
+				
+				
+				//Reciever r = new Reciever(scoket);
+				//UDPMessage udpMessage =  r.getData();
 				//System.out.println("data recieved is : "+ r.getData().getSequencerNumber());				
 				if(udpMessage!= null)
 				{
@@ -59,6 +66,8 @@ public class SequencerListner implements Runnable {
 					//udpMessage.setFrontEndPort(receivePacket.getPort());
 					//udpMessage.setFrontEndIP(receivePacket.getAddress());
 					udpMessage.setSequencerNumber(sequencerNumber);
+					//ACK Message
+					
 					
 					// Multicast  Message in independent thread.
 //					final UDPMessage fUDPMessage = udpMessage; // Or whatever
@@ -89,20 +98,22 @@ public class SequencerListner implements Runnable {
 				}
 				
 //				//Send Acknowledge.
-//				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
-//				ackMessage.setStatus(true);
-//				byte[] sendData = Serializer.serialize(ackMessage);
-//				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-//				serverSocket.send(sendPacket);
-//
-//				// Clear Send buffer
-//				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+				UDPMessage ackMessage = new UDPMessage(Enums.UDPSender.Sequencer, sequencerNumber, udpMessage.getServerName(), udpMessage.getOpernation(), Enums.UDPMessageType.Reply);
+				ackMessage.setStatus(true);
+				sendData = Serializer.serialize(ackMessage);
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+				serverSocket.send(sendPacket);
+
+				// Clear Send buffer
+				sendData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
 			}
-			scoket.close();
+			//scoket.close();
+			serverSocket.close();
 		} catch (Exception ex) {
 			clogger.logException("on starting UDP Server", ex);
 			ex.printStackTrace();
-			scoket.close();
+			//scoket.close();
+			serverSocket.close();
 		}
 
 	}
@@ -142,6 +153,21 @@ public class SequencerListner implements Runnable {
 
 	public void increaseSequenceNumber() {
 		this.sequencerNumber++;
+	}
+	
+	public void SendAck(UDPMessage udpMsg, DatagramSocket scoket, DatagramPacket receivePacket) throws IOException{
+		//Send Acknowledge.
+		udpMsg.setStatus(true);
+		byte[] sendData = Serializer.serialize(udpMsg);
+		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+		serverSocket.send(sendPacket);
+	}
+	
+	public void SendNAck(UDPMessage udpMsg, DatagramSocket scoket,  DatagramPacket receivePacket) throws IOException{
+		udpMsg.setStatus(false);
+		byte[] sendData = Serializer.serialize(udpMsg);
+		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+		serverSocket.send(sendPacket);
 	}
 
 }

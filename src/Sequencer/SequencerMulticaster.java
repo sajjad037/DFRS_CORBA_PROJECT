@@ -3,6 +3,7 @@ package Sequencer;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,46 +38,50 @@ public class SequencerMulticaster {
 	}
 
 	public void multicatMessage(UDPMessage udpMessage) {
-		//Update Sender
+		// Update Sender
 		udpMessage.setSender(Enums.UDPSender.Sequencer);
-		
+
 		// Buffer msg in All 4 replicas
 		bufferRMUlan.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMSajjad.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMUmer.put(udpMessage.getSequencerNumber() + "", udpMessage);
 		bufferRMFeras.put(udpMessage.getSequencerNumber() + "", udpMessage);
-		
+
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        System.out.println("Start Sending : "+timestamp);
-		
+		System.out.println("Start Sending : " + timestamp);
+
 		int count = 4;
 		Thread[] threads = new Thread[count];
 		MulticastThread[] multicastThread = new MulticastThread[count];
 
 		// Start threads
 		multicastThread[0] = new MulticastThread(StaticContent.REPLICA_ULAN_IP_ADDRESS,
-				StaticContent.REPLICA_ULAN_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_ULAN,  bufferRMUlan, Enums.UDPSender.ReplicaUlan);
+				StaticContent.REPLICA_ULAN_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_ULAN,
+				bufferRMUlan, Enums.UDPSender.ReplicaUlan);
 		threads[0] = new Thread(multicastThread[0]);
 		threads[0].start();
 
 		multicastThread[1] = new MulticastThread(StaticContent.REPLICA_SAJJAD_IP_ADDRESS,
-				StaticContent.REPLICA_SAJJAD_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD, bufferRMSajjad, Enums.UDPSender.ReplicaSajjad);
+				StaticContent.REPLICA_SAJJAD_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD,
+				bufferRMSajjad, Enums.UDPSender.ReplicaSajjad);
 		threads[1] = new Thread(multicastThread[1]);
 		threads[1].start();
 
 		multicastThread[2] = new MulticastThread(StaticContent.REPLICA_UMER_IP_ADDRESS,
-				StaticContent.REPLICA_UMER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER, bufferRMUmer, Enums.UDPSender.ReplicaUmer);
+				StaticContent.REPLICA_UMER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER,
+				bufferRMUmer, Enums.UDPSender.ReplicaUmer);
 		threads[2] = new Thread(multicastThread[2]);
 		threads[2].start();
 
 		multicastThread[3] = new MulticastThread(StaticContent.REPLICA_FERAS_IP_ADDRESS,
-				StaticContent.REPLICA_FERAS_lISTENING_PORT,  StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS, bufferRMFeras, Enums.UDPSender.ReplicaFeras);
+				StaticContent.REPLICA_FERAS_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS,
+				bufferRMFeras, Enums.UDPSender.ReplicaFeras);
 		threads[3] = new Thread(multicastThread[3]);
 		threads[3].start();
 
 		timestamp = new Timestamp(System.currentTimeMillis());
-		System.out.println("After Thread Start : "+timestamp);
-        
+		System.out.println("After Thread Start : " + timestamp);
+
 		String msg = "";
 		// get data from threads
 		for (int i = 0; i < count; i++) {
@@ -100,9 +105,9 @@ public class SequencerMulticaster {
 
 			}
 		}
-		
+
 		timestamp = new Timestamp(System.currentTimeMillis());
-		System.out.println("At End : "+timestamp);
+		System.out.println("At End : " + timestamp);
 
 	}
 
@@ -138,89 +143,80 @@ public class SequencerMulticaster {
 	 * @param augs
 	 * @return
 	 */
-	private boolean UPDCall(String destinationIP, int destinationPort, int acknowledgementPort, HashMap<String, UDPMessage> udpMessageMap, Enums.UDPSender sendsTo) {
+	private boolean UPDCall(String destinationIP, int destinationPort, int acknowledgementPort,
+			HashMap<String, UDPMessage> udpMessageMap, Enums.UDPSender sendsTo) {
 		boolean reply = false;
 		String msg = "";
-		msg = Enums.UDPSender.Sequencer.toString() + " Sending to " + sendsTo.toString() + " " + destinationIP + ":" + destinationPort+", with listening Acknowledment on : "+acknowledgementPort;
+		msg = Enums.UDPSender.Sequencer.toString() + " Sending to " + sendsTo.toString() + " " + destinationIP + ":"
+				+ destinationPort + ", with listening Acknowledment on : " + acknowledgementPort;
 		System.out.println(msg);
 		clogger.log(msg);
 		DatagramSocket socket = null;
+		DatagramSocket clientSocket = null;
 
 		try {
-			
+
 			UDPMessage udpMessage = null;
 			Map map = Collections.synchronizedMap(udpMessageMap);
 			Set set = map.entrySet();
 			// Get an iterator
 			Iterator i = set.iterator();
-//			clientSocket = new DatagramSocket();
-//			InetAddress IPAddress = InetAddress.getByName(ip);
-			
+			clientSocket = new DatagramSocket();
+			InetAddress IPAddress = InetAddress.getByName(destinationIP);
+
 			// Send All Messages from Buffer one by one
 			while (i.hasNext()) {
 				Map.Entry me = (Map.Entry) i.next();
-				udpMessage = (UDPMessage) me.getValue();				
+				udpMessage = (UDPMessage) me.getValue();
 
 				// Serialize udpMessage
-//				byte[] sendData = Serializer.serialize(udpMessage);
-//				//Send UDP Message
-//				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-//				clientSocket.send(sendPacket);
-				
-				socket= new DatagramSocket();
-				
-				//Sender s = new Sender(destinationIP, destinationPort, acknowledgementPort, false, socket);
-				Sender s = new Sender(destinationIP, destinationPort, false, socket);
-				if(s.send(udpMessage))
-				{
-					//release Port
-					if(socket != null && !socket.isClosed())
-						socket.close();
-					
-					//Clear Buffer
-					clearBuffer(udpMessage);
-					reply = true;					
-				}
-				
-				
-				//Set Time Out, and Wait For Ack
-//				clientSocket.setSoTimeout(StaticContent.UDP_RECEIVE_TIMEOUT);
-//				
-//				byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
-//				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-//				clientSocket.receive(receivePacket);
-//				byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
-//				
-//				//Deserialize Data to udpMessage Object.
-//				UDPMessage udpMessageReceived = Serializer.deserialize(message);
-//				receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];				
-				
-				
-				
+				byte[] sendData = Serializer.serialize(udpMessage);
+				// Compute ChecK sum here
 
-//				switch (udpMessageReceived.getSender()) {
-//				case ReplicaUlan:
-//				case ReplicaSajjad:
-//				case ReplicaUmer:
-//				case ReplicaFeras:
-//					msg = "Reply FROM " + udpMessageReceived.getSender().toString() + " SERVER:"
-//							+ udpMessageReceived.getSequencerNumber();
-//					System.out.println(msg);
-//					clogger.log(msg);
-//					if (udpMessageReceived.getSequencerNumber() == udpMessage.getSequencerNumber())
-//					{
-//						clearBuffer(udpMessageReceived);
-//						reply = true;
-//					}
-//					
-//					break;
-//
-//				default:
-//					reply = false;
-//				}
+				// Send UDP Message
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, destinationPort);
+				clientSocket.send(sendPacket);
+
+				// socket= new DatagramSocket();
+				try {
+					// Set Time Out, and Wait For Ack
+					clientSocket.setSoTimeout(StaticContent.UDP_RECEIVE_TIMEOUT);
+					byte[] receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					clientSocket.receive(receivePacket);
+					byte[] message = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+					//
+					// Deserialize Data to udpMessage Object.
+					UDPMessage udpMessageReceived = Serializer.deserialize(message);
+					receiveData = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					switch (udpMessageReceived.getSender()) {
+					case ReplicaUlan:
+					case ReplicaSajjad:
+					case ReplicaUmer:
+					case ReplicaFeras:
+						msg = "Reply FROM " + udpMessageReceived.getSender().toString() + " SERVER:"
+								+ udpMessageReceived.getSequencerNumber();
+						System.out.println(msg);
+						clogger.log(msg);
+						if (udpMessageReceived.getSequencerNumber() == udpMessage.getSequencerNumber()) {
+							clearBuffer(udpMessageReceived);
+							reply = true;
+						}
+
+						break;
+
+					default:
+						reply = false;
+					}
+
+				} catch (SocketTimeoutException e) {
+					System.out.println("Time Out occor!");
+					// resend
+					// socket.send(data);
+					// continue;
+				}
+
 			}
-			
-			
 
 		} catch (Exception ex) {
 			// reply = "Error: encouter on " + ServerName + ", Message: " +
@@ -254,8 +250,8 @@ public class SequencerMulticaster {
 			break;
 		}
 		return udpMessage;
-    }
-	
+	}
+
 	class MulticastThread implements Runnable {
 
 		HashMap<String, UDPMessage> udpMessageMap;
@@ -265,11 +261,12 @@ public class SequencerMulticaster {
 		String destinationIP;
 		Enums.UDPSender sendsTo;
 
-		public MulticastThread(String destinationIP, int destinationPort, int acknowledgementPort, HashMap<String, UDPMessage> udpMessageMap, Enums.UDPSender sendsTo) {
-			// store parameter for later user			
+		public MulticastThread(String destinationIP, int destinationPort, int acknowledgementPort,
+				HashMap<String, UDPMessage> udpMessageMap, Enums.UDPSender sendsTo) {
+			// store parameter for later user
 			this.destinationIP = destinationIP;
-			this.destinationPort = destinationPort;			
-			this.acknowledgementPort  =acknowledgementPort;
+			this.destinationPort = destinationPort;
+			this.acknowledgementPort = acknowledgementPort;
 			this.udpMessageMap = udpMessageMap;
 			this.sendsTo = sendsTo;
 		}
