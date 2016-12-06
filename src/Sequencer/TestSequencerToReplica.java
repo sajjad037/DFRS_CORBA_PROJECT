@@ -54,17 +54,17 @@ public class TestSequencerToReplica {
 		
 		
 		
-//		boolean status = UPDCall(StaticContent.REPLICA_SAJJAD_IP_ADDRESS,
-//				StaticContent.REPLICA_SAJJAD_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD,
-//				udpMsg, Enums.UDPSender.ReplicaSajjad);
+		boolean status = UPDCall(StaticContent.REPLICA_SAJJAD_IP_ADDRESS,
+				StaticContent.REPLICA_SAJJAD_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_SAJJAD,
+				udpMsg, Enums.UDPSender.ReplicaSajjad);
 		
 //		boolean status = UPDCall(StaticContent.REPLICA_ULAN_IP_ADDRESS,
 //		StaticContent.REPLICA_ULAN_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_ULAN,
 //		udpMsg, Enums.UDPSender.ReplicaUlan);
 		
-		boolean status = UPDCall(StaticContent.REPLICA_UMER_IP_ADDRESS,
-				StaticContent.REPLICA_UMER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER,
-				udpMsg, Enums.UDPSender.ReplicaUmer);
+//		boolean status = UPDCall(StaticContent.REPLICA_UMER_IP_ADDRESS,
+//				StaticContent.REPLICA_UMER_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_UMER,
+//				udpMsg, Enums.UDPSender.ReplicaUmer);
 		
 //		boolean status = UPDCall(StaticContent.REPLICA_FERAS_IP_ADDRESS,
 //				StaticContent.REPLICA_FERAS_lISTENING_PORT, StaticContent.SEQUENCER_ACK_PORT_FOR_REPLICA_FERAS,
