@@ -339,7 +339,7 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					int portN = Integer.parseInt(arr[1]);
 					
 					//udpMsg2Rm.setFrontEndIP(InetAddress.getByName(resultInfo[k][2].replace("/", "")));
-					System.out.println("array address value" +resultInfo[k][2]);
+					System.out.println("Sending Message :" + udpMsg2Rm.getOpernation().toString()+", TO : " +resultInfo[k][2]+":"+resultInfo[k][3]);
 					
 					udpMsg2Rm.setFrontEndIP(InetAddress.getByName(resultInfo[k][2].replace("/", "")));
 					udpMsg2Rm.setFrontEndPort(Integer.parseInt(resultInfo[k][3]));
@@ -364,10 +364,20 @@ public class FEBookingImpl extends FEBookingIntPOA {
 					
 					byte[] message2 = Arrays.copyOf(receivePacket2.getData(), receivePacket2.getLength());
 					//Deserialize Data to udpMessage Object.
-					UDPMessage udpMessageReceived2 = Serializer.deserialize(message2);					
-					receiveData2 = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+					String replay = new String(message2);
+					System.out.println("Recevied Reply :  "+new String(message2));
+					if(replay!= null && replay.length()> 0)
+					{
+						UDPMessage udpMessageReceived2 = Serializer.deserialize(message2);					
+						receiveData2 = new byte[StaticContent.UDP_REQUEST_BUFFER_SIZE];
+						
+						System.out.println(udpMessageReceived2.getReplyMsg());
+					}
+					else
+					{
+						System.out.println("No Reply Get.");
+					}
 					
-					System.out.println(udpMessageReceived2.getReplyMsg());
 					
 				}									
 			}	
